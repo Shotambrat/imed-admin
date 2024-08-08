@@ -4,9 +4,12 @@
 import { useState } from "react"
 
 export default function ProductMain() {
+    
+    //for Product
+    const [count, setCount] = useState(2);
     const [product, setProduct] = useState(
         {
-            id: 1,
+            id: 0,
             name: "Product 1",
             new: false,
             sale: false,
@@ -39,13 +42,35 @@ export default function ProductMain() {
             },
             characteristics: [
                 {
-                    
+                  titleUz: "",
+                  titleRu: "",
+                  titleEn: "",
+                  valueUz: "",
+                  valueRu: "",
+                  valueEn: "",
                 }
-            ]
+            ],
+            active: true,
+            popular: false
         }
     )
+    const [gallery, setGallery] = useState([])
+    
+    //createdList
+    const [createdList, setCreatedList] = useState([{
+      ...product, id: 1
+    }]);
 
-    const [Gallery, setGallery] = useState([])
+    const createNewProduct = () => {
+      setCount(count + 1);
+      const newProduct = {...product, id:count};
+      setCreatedList(prev => {
+        return [...prev, newProduct];
+      })
+    }
+
+
+    console.log(gallery)
 
 
   return (
@@ -56,77 +81,3 @@ export default function ProductMain() {
     </div>
   )
 }
-
-
-
-{
-    "name": "abc",
-    "tagUz": [
-      "uz 1","uz 2"
-    ],
-    "tagRu": [
-      "ru 1","ru 2"
-    ],
-    "tagEn": [
-      "en 1","en 2"
-    ],
-    "shortDescriptionUz": "sfewa",
-    "shortDescriptionRu": "wrfqa",
-    "shortDescriptionEn": "wjibfq",
-    "descriptions": [
-      {
-        "titleUz": "skjcdb",
-        "titleRu": "awref",
-        "titleEn": "wqrg",
-        "valueUz": "ergyeq",
-        "valueRu": "aw4gy",
-        "valueEn": "w45y"
-      }
-    ],
-    "discount": null,
-    "originalPrice": null,
-    "conditionsUz": "qwefqq",
-    "conditionsRu": "3t5q",
-    "conditionsEn": "ergta",
-    "brand": {
-      "id": 1
-    },
-    "catalog": {
-      "id": 1
-    },
-    "category": {
-      "id": 1
-    },
-    "characteristics": [
-      {
-        "titleUz": "ddifj",
-        "titleRu": "egwa",
-        "titleEn": "stga",
-        "valueUz": "32tq",
-        "valueRu": "gfbrsw",
-        "valueEn": "owefno"
-      }
-    ],
-    "reviews": [
-      {
-        "nameDoctorUz": "sdjbc",
-        "nameDoctorRu": "aojnsc",
-        "nameDoctorEn": "sldkcn",
-        "positionUz": "woidjo",
-        "positionRu": "dqowndo",
-        "positionEn": "doswin",
-        "options": [
-          {
-            "titleUz": "aspodpoqjqpo",
-            "titleRu": "aspodpoqjqpo",
-            "titleEn": "aspodpoqjqpo",
-            "valueUz": "aspodpoqjqpo",
-            "valueRu": "aspodpoqjqpo",
-            "valueEn": "aspodpoqjqpo"
-          }
-        ]
-      }
-    ],
-    "active": true,
-    "popular": true
-  }

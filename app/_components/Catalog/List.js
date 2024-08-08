@@ -12,6 +12,7 @@ import tableCatalog from '@/public/svg/table-catalog.svg';
 import Image from 'next/image';
 import Category from '../Modal/Category';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import ProductMain from '../AdminModal/Products/ProductMain';
 
 const categories = [
   {
@@ -134,6 +135,7 @@ export default function List() {
   const [categoryModal, setCategoryModal] = useState(false);
   const [displayAll, setDisplayAll] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [adminModal, setAdminModal] = useState(false);
 
   const handleFilter = (category) => {
     setSelectedCategory(category);
@@ -162,6 +164,7 @@ export default function List() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:gap-20 gap-5 px-2 py-24">
+      {adminModal && <ProductMain />}
       {categoryModal && <Category handleClose={handleClose} />}
       <div className="w-full flex flex-col lg:flex-row lg:justify-between gap-5">
         <h1 className="text-3xl max-mdx:text2xl font-semibold">КАТАЛОГ</h1>
@@ -215,6 +218,9 @@ export default function List() {
                 />
               </div>
             ))}
+            <button onClick={() => setAdminModal(true)} className='text-6xl font-bold text-redMain flex justify-center items-center border-4 border-redMain border-dashed'>
+              +
+            </button>
           </div>
           {!displayAll && (
             <div className="flex justify-center mt-[50px] mdx:mt-[70px]">
