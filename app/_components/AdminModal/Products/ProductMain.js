@@ -2,15 +2,16 @@
 
 
 import { useState } from "react"
+import CreatedList from "../CreateList/CreatedList";
+import ProductInfo from "./ProductInfo";
 
-export default function ProductMain() {
+export default function ProductMain({closeModal}) {
     
     //for Product
-    const [count, setCount] = useState(2);
     const [product, setProduct] = useState(
         {
             id: 0,
-            name: "Product 1",
+            name: "",
             new: false,
             sale: false,
             shortDescriptionUz: "",
@@ -31,6 +32,7 @@ export default function ProductMain() {
             conditionsUz: "",
             conditionsRu: "",
             conditionsEn: "",
+            technical: true,
             brand: {
                 id: 1
             },
@@ -51,32 +53,22 @@ export default function ProductMain() {
                 }
             ],
             active: true,
-            popular: false
+            popular: false,
+            gallery: []
         }
     )
-    const [gallery, setGallery] = useState([])
     
     //createdList
-    const [createdList, setCreatedList] = useState([{
-      ...product, id: 1
-    }]);
 
-    const createNewProduct = () => {
-      setCount(count + 1);
-      const newProduct = {...product, id:count};
-      setCreatedList(prev => {
-        return [...prev, newProduct];
-      })
-    }
-
-
-    console.log(gallery)
 
 
   return (
-    <div className="fixed h-screen w-full ">
-        <div className="h-full w-full relative max-w-[500px]">
-            
+    <div className="fixed h-screen flex  w-full bg-modalBg z-[9999] inset-0">
+        <div className="h-full w-full relative max-w-[300px] ">
+            <CreatedList closeModal={closeModal} emptyItem={product} />
+        </div>
+        <div className="w-full h-full bg-white p-8 overflow-y-scroll no-scrollbar">
+          <ProductInfo product={product} />
         </div>
     </div>
   )

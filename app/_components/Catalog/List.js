@@ -164,7 +164,7 @@ export default function List() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto flex flex-col lg:gap-20 gap-5 px-2 py-24">
-      {adminModal && <ProductMain />}
+      {adminModal && <ProductMain closeModal={setAdminModal} />}
       {categoryModal && <Category handleClose={handleClose} />}
       <div className="w-full flex flex-col lg:flex-row lg:justify-between gap-5">
         <h1 className="text-3xl max-mdx:text2xl font-semibold">КАТАЛОГ</h1>
