@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import VerticalCarousel from "./ProductCarousel";
-import EditModal from "./EditModal"; // новый компонент для модалки редактирования
+import ProductPreviewEditModal from "./ProductPreviewEditModal"; // Импорт новой модалки
 
 export default function ProductPreview({
   product,
@@ -53,7 +53,7 @@ export default function ProductPreview({
         </div>
       </div>
       {isEditModalOpen && (
-        <EditModal
+        <ProductPreviewEditModal
           product={product}
           selectedLanguage={selectedLanguage}
           onSave={handleSaveChanges}

@@ -6,36 +6,26 @@ import defaultImage from "@/public/admin/default-image.svg";
 import close from "@/public/svg/close.svg";
 import backIcon from "@/public/admin/arrow-red-left.svg";
 
-export default function CreatedList({ closeModal, emptyItem }) {
+export default function CreatedList({
+  closeModal,
+  emptyItem,
+  createdList,
+  setActiveProductId, // Функция для установки активного продукта
+}) {
   const [count, setCount] = useState(2);
-  const [createdList, setCreatedList] = useState([
-    {
-      ...emptyItem,
-      id: 1,
-    },
-  ]);
-  const [activeItem, setActiveItem] = useState(
-    (createdList[0] && createdList[0].id) || 1
-  );
 
   const createNewItem = () => {
     setCount(count + 1);
     const newItem = { ...emptyItem, id: count };
-    setCreatedList((prev) => [...prev, newItem]);
-    setActiveItem(count);
+    setActiveProductId(newItem.id); // Устанавливаем новый элемент как активный
+    createdList.push(newItem);
   };
 
   const deleteItem = (id) => {
-    setCreatedList((prev) => prev.filter((item) => item.id !== id));
-    if (id === activeItem) {
-      setActiveItem(prev[0]?.id || null);
+    const updatedList = createdList.filter((item) => item.id !== id);
+    if (id === createdList.id) {
+      setActiveProductId(updatedList[0]?.id || null);
     }
-  };
-
-  const handleItemChange = (id, updatedData) => {
-    setCreatedList((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updatedData } : item))
-    );
   };
 
   return (
@@ -59,11 +49,11 @@ export default function CreatedList({ closeModal, emptyItem }) {
             <button
               key={item.id}
               className={`${
-                item.id == activeItem
+                item.id === createdList.id
                   ? "bg-red-100 border border-redMain"
                   : "bg-white"
               } p-2 relative flex justify-start w-full gap-2 h-24`}
-              onClick={() => setActiveItem(item.id)}
+              onClick={() => setActiveProductId(item.id)} // Устанавливаем выбранный элемент как активный
             >
               <button
                 onClick={() => deleteItem(item.id)}
@@ -92,7 +82,7 @@ export default function CreatedList({ closeModal, emptyItem }) {
               </div>
               <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">
                 <h2 className="overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
-                  {item.name || "Новый товар"}
+                  {item.name.uz || "Новый товар"}
                 </h2>
                 <p className="text-redMain text-start">Редактировать</p>
               </div>
