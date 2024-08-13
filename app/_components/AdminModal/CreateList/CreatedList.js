@@ -21,13 +21,21 @@ export default function CreatedList({ closeModal, emptyItem }) {
   const createNewItem = () => {
     setCount(count + 1);
     const newItem = { ...emptyItem, id: count };
-    setCreatedList((prev) => {
-      return [...prev, newItem];
-    });
+    setCreatedList((prev) => [...prev, newItem]);
+    setActiveItem(count);
   };
 
   const deleteItem = (id) => {
     setCreatedList((prev) => prev.filter((item) => item.id !== id));
+    if (id === activeItem) {
+      setActiveItem(prev[0]?.id || null);
+    }
+  };
+
+  const handleItemChange = (id, updatedData) => {
+    setCreatedList((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...updatedData } : item))
+    );
   };
 
   return (
@@ -54,7 +62,8 @@ export default function CreatedList({ closeModal, emptyItem }) {
                 item.id == activeItem
                   ? "bg-red-100 border border-redMain"
                   : "bg-white"
-              }  p-2 relative flex justify-start w-full gap-2 h-24`}
+              } p-2 relative flex justify-start w-full gap-2 h-24`}
+              onClick={() => setActiveItem(item.id)}
             >
               <button
                 onClick={() => deleteItem(item.id)}
@@ -71,7 +80,9 @@ export default function CreatedList({ closeModal, emptyItem }) {
               <div className="bg-white w-32 h-full flex items-center justify-center">
                 <Image
                   src={
-                    !emptyItem.gallery.length ? defaultImage : item.gallery[0]
+                    item.gallery.length === 0
+                      ? defaultImage
+                      : item.gallery[0]
                   }
                   width={100}
                   height={100}
@@ -79,9 +90,9 @@ export default function CreatedList({ closeModal, emptyItem }) {
                   className="h-full w-full"
                 />
               </div>
-              <div className=" h-full w-full overflow-x-hidden flex flex-col justify-center  items-start">
-                <h2 className=" overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
-                  {item.name}
+              <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">
+                <h2 className="overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
+                  {item.name || "Новый товар"}
                 </h2>
                 <p className="text-redMain text-start">Редактировать</p>
               </div>
