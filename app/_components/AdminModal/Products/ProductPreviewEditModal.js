@@ -56,14 +56,14 @@ export default function ProductPreviewEditModal({
   };
 
   // Calculating the final price if promotion is active
-  const finalPrice =
-    localData.sale && localData.discount > 0
-      ? Math.round(localData.originalPrice * (1 - localData.discount / 100))
-      : localData.originalPrice;
+  const finalPrice = 
+  product && product.sale && product.discount > 0
+    ? Math.round(product.originalPrice * (1 - product.discount / 100))
+    : product?.originalPrice || 0;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-lg w-full max-w-md">
+      <div className="bg-white p-8 rounded-lg w-full max-w-md h-[90%] overflow-y-scroll">
         <div className="flex gap-4 mb-4">
           {["uz", "ru", "en"].map((lang) => (
             <button

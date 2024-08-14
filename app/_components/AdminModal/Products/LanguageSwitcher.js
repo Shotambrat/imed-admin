@@ -1,24 +1,23 @@
-export default function LanguageSwitcher({ currentLang, onLangChange }) {
-    return (
-      <div className="flex gap-4 mb-4">
+import { useLanguage } from "./LanguageContext";
+
+const languages = ["uz", "ru", "en"];
+
+export default function LanguageSwitcher() {
+  const { selectedLanguage, handleLanguageChange } = useLanguage();
+
+  return (
+    <div className="flex gap-4 mb-4">
+      {languages.map((lang) => (
         <button
-          className={`py-1 px-3 rounded ${currentLang === 'uz' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
-          onClick={() => onLangChange('uz')}
+          key={lang}
+          onClick={() => handleLanguageChange(lang)}
+          className={`px-4 py-2 text-sm font-semibold ${
+            selectedLanguage === lang ? "bg-redMain text-white" : "bg-white"
+          }`}
         >
-          Uzbek
+          {lang.toUpperCase()}
         </button>
-        <button
-          className={`py-1 px-3 rounded ${currentLang === 'ru' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
-          onClick={() => onLangChange('ru')}
-        >
-          Russian
-        </button>
-        <button
-          className={`py-1 px-3 rounded ${currentLang === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
-          onClick={() => onLangChange('en')}
-        >
-          English
-        </button>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
+}

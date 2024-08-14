@@ -1,128 +1,71 @@
+"use client"
 import { useState } from "react";
 import CreatedList from "../CreateList/CreatedList";
 import ProductInfo from "./ProductInfo";
 
 export default function ProductMain({ closeModal }) {
-  // Состояние для управления списком продуктов
-  const [createdList, setCreatedList] = useState([
-    {
-      id: 1,
-      name: { uz: "", ru: "", en: "" },
-      new: false,
-      sale: false,
-      shortDescription: { uz: "", ru: "", en: "" },
-      discount: 0,
-      originalPrice: 0,
-      conditions: { uz: "", ru: "", en: "" },
-      technical: true,
-      brand: { id: 1 },
-      category: { id: 1 },
-      catalog: { id: 1 },
-      characteristics: [
-        {
-          title: { uz: "", ru: "", en: "" },
-          value: { uz: "", ru: "", en: "" },
-        },
-      ],
-      active: true,
-      popular: false,
-      gallery: [],
-    },
-  ]);
-  // Состояние для управления активным продуктом
-  const [activeProductId, setActiveProductId] = useState(createdList[0].id);
 
-  // Функция для обновления активного продукта
-  const handleProductChange = (id, updatedData) => {
-    setCreatedList((prevList) =>
-      prevList.map((product) => (product.id === id ? updatedData : product))
-    );
-  };
+  // const emptyItem = {
+  //   id: Date.now(),
+  //   name: { uz: "", ru: "", en: "" },
+  //   new: false,
+  //   sale: false,
+  //   shortDescription: { uz: "", ru: "", en: "" },
+  //   discount: 0,
+  //   originalPrice: 0,
+  //   conditions: { uz: "", ru: "", en: "" },
+  //   technical: true,
+  //   brand: { id: 1 },
+  //   category: { id: 1 },
+  //   catalog: { id: 1 },
+  //   active: true,
+  //   popular: false,
+  //   gallery: [],
+  // };
+
+  // const [createdList, setCreatedList] = useState([emptyItem]);
+
+  // const [activeProductId, setActiveProductId] = useState(emptyItem.id);
+
+  // const handleProductChange = (id, updatedData) => {
+  //   setCreatedList((prevList) =>
+  //     prevList.map((product) => (product.id === id ? updatedData : product))
+  //   );
+  // };
+
+  // const handleAddProduct = () => {
+  //   const newProduct = { ...emptyItem, id: Date.now() };
+  //   setCreatedList((prevList) => [...prevList, newProduct]);
+  //   setActiveProductId(newProduct.id);
+  // };
+
+  // const handleDeleteProduct = (id) => {
+  //   const updatedList = createdList.filter((product) => product.id !== id);
+  //   setCreatedList(updatedList);
+  //   if (id === activeProductId) {
+  //     setActiveProductId(updatedList[0]?.id || null);
+  //   }
+  // };
 
   return (
     <div className="fixed h-screen flex w-full bg-modalBg z-[9999] inset-0">
-      <div className="h-full w-full relative max-w-[300px]">
+      {/* <div className="h-full w-full relative max-w-[300px]">
         <CreatedList
+          items={createdList}
+          emptyItem={emptyItem} // Передаем пустой элемент в CreatedList
+          activeId={activeProductId}
+          setActiveId={setActiveProductId}
+          onAdd={handleAddProduct}
+          onDelete={handleDeleteProduct}
           closeModal={closeModal}
-          emptyItem={{
-            id: Date.now(), // Уникальный id для нового элемента
-            name: { uz: "", ru: "", en: "" },
-            new: false,
-            sale: false,
-            shortDescription: { uz: "", ru: "", en: "" },
-            discount: 0,
-            originalPrice: 0,
-            conditions: { uz: "", ru: "", en: "" },
-            technical: true,
-            brand: { id: 1 },
-            category: { id: 1 },
-            catalog: { id: 1 },
-            active: true,
-            popular: false,
-            gallery: [],
-          }}
-          createdList={createdList}
-          setActiveProductId={setActiveProductId} // Устанавливаем активный продукт
         />
       </div>
       <div className="w-full h-full bg-white p-8 overflow-y-scroll no-scrollbar">
         <ProductInfo
-          product={createdList.find((p) => p.id === activeProductId)} // Передаем активный продукт в ProductInfo
-          handleProductChange={handleProductChange} // Функция для сохранения изменений
+          product={createdList.find((p) => p.id === activeProductId)}
+          handleProductChange={handleProductChange} 
         />
-      </div>
+      </div> */}
     </div>
   );
 }
-
-// {
-//     id: 0,
-//     name: "",
-//     new: false,
-//     sale: false,
-//     shortDescriptionUz: "",
-//     shortDescriptionRu: "",
-//     shortDescriptionEn: "",
-//     description: [
-//         {
-//             titleUz: "",
-//             titleRu: "",
-//             titleEn: "",
-//             valueUz: "",
-//             valueRu: "",
-//             valueEn: "",
-//         }
-//     ],
-//     discount: 0,
-//     originalPrice: 0,
-//     conditionsUz: "", 
-//     conditionsRu: "",
-//     conditionsEn: "",
-//     technical: true,
-//     brand: {
-//         id: 1
-//     },
-//     category: {
-//         id: 1
-//     },
-//     catalog: {
-//         id: 1
-//     },
-//     characteristics: [
-//         {
-//           titleUz: "",
-//           titleRu: "",
-//           titleEn: "",
-//           valueUz: "",
-//           valueRu: "",
-//           valueEn: "",
-//         }
-//     ],
-//     active: true,
-//     popular: false,
-//     gallery: []
-// }
-
-
-
-
