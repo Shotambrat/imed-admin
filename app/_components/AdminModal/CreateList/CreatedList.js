@@ -11,19 +11,14 @@ export default function CreatedList({
   closeModal,
   activeId,
   setActiveId,
-  images,
-  title,
   addNewItem,
   deleteItem,
 }) {
-
-  console.log(images);
-
   return (
     <div className="h-full w-full absolute inset-0 bg-snowy flex flex-col gap-8 justify-between pt-4">
       <div className="flex flex-col gap-6 w-full px-3 items-start overflow-y-scroll no-scrollbar">
         <button
-          onClick={() => closeModal(false)} // Закрытие списка
+          onClick={() => closeModal(false)}
           className="items-center flex justify-start gap-2 hover:gap-4 transition-all duration-200 text-redMain text-xl font-semibold"
         >
           <Image
@@ -44,11 +39,11 @@ export default function CreatedList({
                   ? "bg-red-100 border border-redMain"
                   : "bg-white"
               } p-2 relative flex justify-start w-full gap-2 h-24`}
-              onClick={() => setActiveId(item.id)} // Устанавливаем выбранный элемент как активный
+              onClick={() => setActiveId(item.id)}
             >
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Останавливаем всплытие события
+                  e.stopPropagation();
                   deleteItem(item.id);
                 }}
                 className="absolute w-5 h-5 top-1 right-1"
@@ -64,7 +59,9 @@ export default function CreatedList({
               <div className="bg-white w-32 h-full flex items-center justify-center">
                 <Image
                   src={
-                    images[activeId - 1] !== null && images[activeId - 1] !== undefined && images[activeId - 1] !== '' ? images[activeId - 1] : defaultImage
+                    item.head.image[0] 
+                      ? item.head.image[0] 
+                      : defaultImage
                   }
                   width={100}
                   height={100}
@@ -74,7 +71,9 @@ export default function CreatedList({
               </div>
               <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">
                 <h2 className="overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
-                { title[activeId - 1] !== null && title[activeId - 1] !== undefined && title[activeId - 1] !== '' ? title[activeId - 1][activeLang] : defaultImage }
+                { item.head.heading[activeLang] 
+                    ? item.head.heading[activeLang] 
+                    : "Нет заголовка" }
                 </h2>
                 <p className="text-redMain text-start">Редактировать</p>
               </div>
