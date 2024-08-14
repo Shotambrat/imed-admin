@@ -117,28 +117,32 @@ export default function ProductPreviewEditModal({
           />
         </div>
 
-        {/* Discount */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Скидка (%)</label>
-          <input
-            type="number"
-            name="discount"
-            value={localData.discount}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
+        {/* Discount (shown only if sale is active) */}
+        {localData.sale && (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Скидка (%)</label>
+              <input
+                type="number"
+                name="discount"
+                value={localData.discount}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
 
-        {/* Final Price */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Цена со скидкой</label>
-          <input
-            type="number"
-            value={finalPrice}
-            disabled
-            className="w-full p-2 border border-gray-300 rounded bg-gray-100"
-          />
-        </div>
+            {/* Final Price */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Цена со скидкой</label>
+              <input
+                type="number"
+                value={finalPrice}
+                disabled
+                className="w-full p-2 border border-gray-300 rounded bg-gray-100"
+              />
+            </div>
+          </>
+        )}
 
         {/* Conditions */}
         <div className="mb-4">
@@ -148,6 +152,18 @@ export default function ProductPreviewEditModal({
             value={localData.conditions[currentLanguage]}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        {/* Maintenance */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Техническая поддержка</label>
+          <input
+            type="checkbox"
+            name="maintenance"
+            checked={localData.maintenance}
+            onChange={handleChange}
+            className="w-4 h-4"
           />
         </div>
 
