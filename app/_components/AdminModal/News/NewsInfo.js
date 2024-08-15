@@ -20,7 +20,6 @@ export default function NewsInfo({
   const [localOptions, setLocalOptions] = useState([...activeItem.newOption]);
 
   useEffect(() => {
-    // Обновляем локальное состояние при выборе нового активного элемента
     setLocalHeading({ ...activeItem.head.heading });
     setLocalText({ ...activeItem.head.text });
     setLocalImages([...activeItem.head.image]);
@@ -55,7 +54,7 @@ export default function NewsInfo({
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const images = files.map((file) => URL.createObjectURL(file));
+    const images = files.map((file) => file);
     setLocalImages([...localImages, ...images]);
   };
 
@@ -81,7 +80,7 @@ export default function NewsInfo({
 
   const handleOptionImageChange = (index, e) => {
     const files = Array.from(e.target.files);
-    const images = files.map((file) => URL.createObjectURL(file));
+    const images = files.map((file) => file);
     const updatedOptions = localOptions.map((option, i) =>
       i === index ? { ...option, image: [...option.image, ...images] } : option
     );
@@ -139,18 +138,18 @@ export default function NewsInfo({
           <div className="max-w-[800px] w-full relative bg-white rounded-lg shadow-lg p-6">
             <button
               onClick={() => setHeadModal(false)}
-              className="top-4 right-4 absolute text-2xl font-bold"
+              className="top-10 right-10 absolute text-2xl font-bold"
             >
               X
             </button>
-            <div className="bg-snowy py-4 px-4 text-2xl font-semibold">
+            <div className="bg-snowy py-4 px-4 mb-4 text-2xl font-semibold">
               Редактировать блок
             </div>
             <div className="flex gap-4 mb-4">
               {languages.map((lang, index) => (
                 <button
                   key={index}
-                  className={`font-medium border px-4 pt-1 pb-2 rounded-lg text-xl border-red-300 ${
+                  className={`font-medium border px-4 py-2 rounded-lg text-xl border-red-300 ${
                     lang === activeLang ? "bg-redMain text-white" : ""
                   }`}
                   onClick={() => setActiveLang(lang)}
@@ -187,6 +186,7 @@ export default function NewsInfo({
                     })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
+                  rows="4"
                 />
               </div>
               <div className="mb-4">
@@ -197,7 +197,7 @@ export default function NewsInfo({
                   {localImages.map((image, index) => (
                     <div key={index} className="relative">
                       <Image
-                        src={image}
+                        src={URL.createObjectURL(image)}
                         alt={`Фото ${index}`}
                         width={80}
                         height={80}
@@ -252,11 +252,11 @@ export default function NewsInfo({
             <div className="bg-snowy py-4 px-4 text-2xl font-semibold">
               Редактировать блок опций
             </div>
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-4 mb-4 mt-4">
               {languages.map((lang, index) => (
                 <button
                   key={index}
-                  className={`font-medium border px-4 pt-1 pb-2 rounded-lg text-xl border-red-300 ${
+                  className={`font-medium border px-4 py-2 rounded-lg text-xl border-red-300 ${
                     lang === activeLang ? "bg-redMain text-white" : ""
                   }`}
                   onClick={() => setActiveLang(lang)}
@@ -290,6 +290,7 @@ export default function NewsInfo({
                       handleOptionChange(index, "text", e.target.value)
                     }
                     className="w-full p-2 border border-gray-300 rounded"
+                    rows="4"
                   />
                 </div>
                 <div className="mb-4">
@@ -300,7 +301,7 @@ export default function NewsInfo({
                     {option.image.map((image, imgIndex) => (
                       <div key={imgIndex} className="relative">
                         <Image
-                          src={image}
+                          src={URL.createObjectURL(image)}
                           alt={`Фото опции ${imgIndex}`}
                           width={80}
                           height={80}
@@ -351,7 +352,7 @@ export default function NewsInfo({
         {languages.map((lang, index) => (
           <button
             key={index}
-            className={`font-medium border px-4 pt-1 pb-2 rounded-lg text-xl border-red-300 ${
+            className={`font-medium border px-4 py-2 rounded-lg text-xl border-red-300 ${
               lang === activeLang ? "bg-redMain text-white" : ""
             }`}
             onClick={() => setActiveLang(lang)}
@@ -363,12 +364,12 @@ export default function NewsInfo({
       <div className="max-w-[800px] w-full mx-auto flex flex-col gap-8">
         <div className="w-full flex flex-col gap-2 items-start">
           <h1 className="text-4xl font-semibold">{localHeading[activeLang]}</h1>
-          <p>{localText[activeLang]}</p>
+          <p className="whitespace-pre-line">{localText[activeLang]}</p>
           <div className="w-full flex gap-2">
             {localImages.map((image, index) => (
               <Image
                 key={index}
-                src={image}
+                src={URL.createObjectURL(image)}
                 alt={`Фото ${index}`}
                 width={1000}
                 height={1000}
@@ -392,12 +393,12 @@ export default function NewsInfo({
             <h2 className="text-xl font-semibold mb-2">
               {option.heading[activeLang]}
             </h2>
-            <p>{option.text[activeLang]}</p>
+            <p className="whitespace-pre-line">{option.text[activeLang]}</p>
             <div className="w-full flex gap-2">
               {option.image.map((image, imgIndex) => (
                 <Image
                   key={imgIndex}
-                  src={image}
+                  src={URL.createObjectURL(image)}
                   alt={`Фото опции ${imgIndex}`}
                   width={1000}
                   height={1000}
@@ -413,19 +414,21 @@ export default function NewsInfo({
             </button>
           </div>
         ))}
-        <button
-          onClick={() => setOptionModal(true)}
-          className="px-12 py-3 text-white bg-rose-500 rounded"
-        >
-          Редактировать опцию
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setOptionModal(true)}
+            className="px-12 py-3 text-white bg-rose-500 rounded"
+          >
+            Редактировать опции
+          </button>
 
-        <button
-          onClick={handleAddOption}
-          className="px-12 py-3 text-white bg-blue-500 rounded mt-4"
-        >
-          Добавить опцию
-        </button>
+          <button
+            onClick={handleAddOption}
+            className="px-12 py-3 text-redMain border border-redMain rounded"
+          >
+            Добавить опцию
+          </button>
+        </div>
       </div>
     </div>
   );

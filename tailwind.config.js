@@ -49,6 +49,7 @@ module.exports = {
         redMain: '#E31E24',
         greenCategory: '#E6F2EB',
         modalBg: 'rgba(0, 0, 0, 0.6)',
+        subModal: 'rgba(0, 0, 0, 0.8)',
         contactBg: '#E94B50'
       },
     },
