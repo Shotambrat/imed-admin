@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function MoreInfo({ activeItem, activeLang, setCreatedList, languages }) {
+export default function MoreInfo({ activeItem, activeLang, setActiveLang, setCreatedList, languages }) {
   const [editModal, setEditModal] = useState(false);
   const [formData, setFormData] = useState({
     organizer: activeItem.organizer,
@@ -14,6 +14,21 @@ export default function MoreInfo({ activeItem, activeLang, setCreatedList, langu
     phoneNum: activeItem.phoneNum,
     email: activeItem.email,
   });
+
+  useEffect(() => {
+    setFormData({
+      organizer: activeItem.organizer,
+      country: activeItem.country,
+      dateFrom: activeItem.dateFrom,
+      dateTo: activeItem.dateTo,
+      timeFrom: activeItem.timeFrom,
+      timeTo: activeItem.timeTo,
+      address: activeItem.address,
+      participation: activeItem.participation,
+      phoneNum: activeItem.phoneNum,
+      email: activeItem.email,
+    });
+  }, [activeItem]);
 
   const handleInputChange = (e, field) => {
     const value = e.target.value;
@@ -46,7 +61,13 @@ export default function MoreInfo({ activeItem, activeLang, setCreatedList, langu
         item.id === activeItem.id ? updatedItem : item
       )
     );
-    setEditModal(false);
+  };
+
+  const handleLangChange = (newLang) => {
+    // Сначала сохраняем текущие данные
+    handleSave();
+    // Затем меняем язык
+    setActiveLang(newLang);
   };
 
   return (
@@ -59,32 +80,32 @@ export default function MoreInfo({ activeItem, activeLang, setCreatedList, langu
         </div>
         <div className="grid grid-cols-2 mt-[30px] gap-x-5 gap-y-5">
           <div className="text-[#808080]">Организатор</div>
-          <div>{activeItem.organizer[activeLang]}</div>
+          <div>{formData.organizer[activeLang]}</div>
 
           <div className="text-[#808080]">Страна проведения</div>
-          <div>{activeItem.country[activeLang]}</div>
+          <div>{formData.country[activeLang]}</div>
 
           <div className="text-[#808080]">Дата</div>
           <div>
-            {activeItem.dateFrom[activeLang]} - {activeItem.dateTo[activeLang]}
+            {formData.dateFrom[activeLang]} - {formData.dateTo[activeLang]}
           </div>
 
           <div className="text-[#808080]">Время</div>
           <div>
-            {activeItem.timeFrom} - {activeItem.timeTo}
+            {formData.timeFrom} - {formData.timeTo}
           </div>
 
           <div className="text-[#808080]">Адрес</div>
-          <div>{activeItem.address[activeLang]}</div>
+          <div>{formData.address[activeLang]}</div>
 
           <div className="text-[#808080]">Стоимость участия</div>
-          <div>{activeItem.participation[activeLang]}</div>
+          <div>{formData.participation[activeLang]}</div>
 
           <div className="text-[#808080]">Контактный телефон</div>
-          <div>{activeItem.phoneNum}</div>
+          <div>{formData.phoneNum}</div>
 
           <div className="text-[#808080]">Контактный E-mail</div>
-          <div>{activeItem.email}</div>
+          <div>{formData.email}</div>
         </div>
       </div>
 
@@ -111,7 +132,7 @@ export default function MoreInfo({ activeItem, activeLang, setCreatedList, langu
                   className={`font-medium border px-4 pt-1 pb-2 rounded-lg text-xl border-red-300 ${
                     lang === activeLang ? "bg-redMain text-white" : ""
                   }`}
-                  onClick={() => setActiveLang(lang)}
+                  onClick={() => handleLangChange(lang)}
                 >
                   {lang.toUpperCase()}
                 </button>
