@@ -1,51 +1,72 @@
 "use client";
 import { useState } from "react";
-import CreatedList from "../CreateList/CreatedList";
-import NewsInfo from "./NewsInfo";
+import CreatedList from "./CreatedList";
+import EventInfo from "./EventInfo";
 
-export default function NewsMain({ closeModal }) {
-  // Инициализация переменных состояния
+export default function EventMain({ closeModal }) {
   const [idCounter, setIdCounter] = useState(2);
   const [activeId, setActiveId] = useState(1);
 
-  const emptyItem = {
-    head: {
-      heading: {
-        uz: "",
-        ru: "",
-        en: "",
-      },
-      text: {
-        uz: "",
-        ru: "",
-        en: "",
-      },
-      image: [], // Пустой массив для изображений
-      orderNum: 1,
+  const [emptyItem, setEmptyItem] = useState({
+    id: 1,
+    name: {
+      uz: "Товарчи организатори O'zbek tilida",
+      ru: "Организатор товаров на русском",
+      en: "Product organizer in English",
     },
-    newOption: [
+    abouts: [
       {
-        heading: {
-          uz: "",
-          ru: "",
-          en: "",
+        title: {
+          uz: "Tadbir haqida sarlavha O'zbek tilida",
+          ru: "Заголовок о мероприятии на русском",
+          en: "Event about title in English",
         },
         text: {
-          uz: "",
-          ru: "",
-          en: "",
+          uz: "Tadbir haqida matn O'zbek tilida",
+          ru: "Текст о мероприятии на русском",
+          en: "Event about text in English",
         },
-        image: [], // Пустой массив для изображений
-        orderNum: 1,
       },
     ],
-    id: 1, // Идентификатор элемента
-  };
+    organizer: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    country: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    dateFrom: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    dateTo: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    timeFrom: "",
+    timeTo: "",
+    address: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    participation: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
+    phoneNum: "",
+    email: "",
+    photo: [],
+  });
 
   const [createdList, setCreatedList] = useState([{ ...emptyItem }]);
   const [activeItem, setActiveItem] = useState(createdList[0]);
-
-  console.log(createdList)
 
   const handleChangeActiveId = (id) => {
     const updatedItem = createdList.find((item) => item.id === id);
@@ -74,9 +95,6 @@ export default function NewsMain({ closeModal }) {
     }
   };
 
-
-
-
   const languages = ["uz", "ru", "en"];
   const [activeLang, setActiveLang] = useState(languages[0]);
 
@@ -94,13 +112,14 @@ export default function NewsMain({ closeModal }) {
         />
       </div>
       <div className="w-full h-full bg-white p-8 overflow-y-scroll no-scrollbar">
-        <NewsInfo
-        setCreatedList={setCreatedList}
+        <EventInfo
+          setCreatedList={setCreatedList}
+          activeId={activeId}
           activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          languages={languages}
+          createdList={createdList}
           activeLang={activeLang}
           setActiveLang={setActiveLang}
+          languages={languages}
         />
       </div>
     </div>

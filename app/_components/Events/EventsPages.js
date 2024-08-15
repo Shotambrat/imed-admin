@@ -5,8 +5,11 @@ import EventCard from "@/app/_components/Events/EventCard";
 import Pagination from "@/app/_components/News/Pagination";
 import Link from "next/link";
 import { useState, useRef, useEffect } from 'react';
+import EventMain from "../AdminModal/Event/EventMain";
 
 export default function EventsPages() {
+    const [adminModal, setAdminModal] = useState(false)
+
     const cities = ["Все", "Ташкент", "Самарканд", "Фергана", "Хорезм", "Бухара", "Андижан", "Навои", "Джизак", "Кашкадарья", "Наманган", "Сурхандарья", "Сырдарья"];
     const data = [
         {
@@ -116,7 +119,15 @@ export default function EventsPages() {
 
     return (
         <div className="w-full max-w-[1440px] mx-auto px-2 flex flex-col gap-8 mb-[120px] overflow-hidden">
+            {
+                adminModal && <EventMain closeModal={setAdminModal} />
+            }
+            <div className="w-full flex justify-between">
             <h2 className="text-3xl max-mdx:text-2xl font-semibold uppercase mt-[40px]">Мероприятия</h2>
+                <button onClick={() => setAdminModal(true)} className="py-3 px-12 bg-redMain text-white font-semibold text-xl">
+                    Добавить
+                </button>
+            </div>
             <div ref={containerRef} className="flex gap-4 overflow-x-auto no-scrollbar">
                 {cities.map(city => (
                     <button

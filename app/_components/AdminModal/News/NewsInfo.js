@@ -11,7 +11,9 @@ export default function NewsInfo({
 }) {
   const [headModal, setHeadModal] = useState(false);
   const [optionModal, setOptionModal] = useState(false);
-  const [localHeading, setLocalHeading] = useState({ ...activeItem.head.heading });
+  const [localHeading, setLocalHeading] = useState({
+    ...activeItem.head.heading,
+  });
   const [localText, setLocalText] = useState({ ...activeItem.head.text });
   const [localImages, setLocalImages] = useState([...activeItem.head.image]);
 
@@ -91,11 +93,25 @@ export default function NewsInfo({
       i === optionIndex
         ? {
             ...option,
-            image: option.image.filter((_, imgIndex) => imgIndex !== imageIndex),
+            image: option.image.filter(
+              (_, imgIndex) => imgIndex !== imageIndex
+            ),
           }
         : option
     );
     setLocalOptions(updatedOptions);
+  };
+
+  const handleDeleteOption = (index) => {
+    const updatedOptions = activeItem.newOption.filter((_, i) => i !== index);
+    const updatedItem = {
+      ...activeItem,
+      newOption: updatedOptions,
+    };
+    setActiveItem(updatedItem);
+    setCreatedList((prevList) =>
+      prevList.map((item) => (item.id === activeItem.id ? updatedItem : item))
+    );
   };
 
   const handleAddOption = () => {
@@ -145,7 +161,9 @@ export default function NewsInfo({
             </div>
             <div className="w-full py-4">
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Заголовок</label>
+                <label className="block text-sm font-medium mb-2">
+                  Заголовок
+                </label>
                 <input
                   type="text"
                   value={localHeading[activeLang]}
@@ -172,11 +190,18 @@ export default function NewsInfo({
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Фото (необязательно)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Фото (необязательно)
+                </label>
                 <div className="flex gap-2">
                   {localImages.map((image, index) => (
                     <div key={index} className="relative">
-                      <Image src={image} alt={`Фото ${index}`} width={80} height={80} />
+                      <Image
+                        src={image}
+                        alt={`Фото ${index}`}
+                        width={80}
+                        height={80}
+                      />
                       <button
                         onClick={() => handleDeleteImage(index)}
                         className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
@@ -243,30 +268,47 @@ export default function NewsInfo({
             {localOptions.map((option, index) => (
               <div key={index} className="w-full py-4">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Заголовок опции</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Заголовок опции
+                  </label>
                   <input
                     type="text"
                     value={option.heading[activeLang]}
-                    onChange={(e) => handleOptionChange(index, "heading", e.target.value)}
+                    onChange={(e) =>
+                      handleOptionChange(index, "heading", e.target.value)
+                    }
                     className="w-full p-2 border border-gray-300 rounded"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Текст опции</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Текст опции
+                  </label>
                   <textarea
                     value={option.text[activeLang]}
-                    onChange={(e) => handleOptionChange(index, "text", e.target.value)}
+                    onChange={(e) =>
+                      handleOptionChange(index, "text", e.target.value)
+                    }
                     className="w-full p-2 border border-gray-300 rounded"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Фото опции (необязательно)</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Фото опции (необязательно)
+                  </label>
                   <div className="flex gap-2">
                     {option.image.map((image, imgIndex) => (
                       <div key={imgIndex} className="relative">
-                        <Image src={image} alt={`Фото опции ${imgIndex}`} width={80} height={80} />
+                        <Image
+                          src={image}
+                          alt={`Фото опции ${imgIndex}`}
+                          width={80}
+                          height={80}
+                        />
                         <button
-                          onClick={() => handleDeleteOptionImage(index, imgIndex)}
+                          onClick={() =>
+                            handleDeleteOptionImage(index, imgIndex)
+                          }
                           className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                         >
                           X
@@ -284,6 +326,7 @@ export default function NewsInfo({
                     </label>
                   </div>
                 </div>
+                <hr className="border-4 border-red-400" />
               </div>
             ))}
             <div className="flex justify-end gap-4 mt-6">
@@ -319,11 +362,18 @@ export default function NewsInfo({
       </div>
       <div className="max-w-[800px] w-full mx-auto flex flex-col gap-8">
         <div className="w-full flex flex-col gap-2 items-start">
-          <h1>{localHeading[activeLang]}</h1>
+          <h1 className="text-4xl font-semibold">{localHeading[activeLang]}</h1>
           <p>{localText[activeLang]}</p>
           <div className="w-full flex gap-2">
             {localImages.map((image, index) => (
-              <Image key={index} src={image} alt={`Фото ${index}`} width={80} height={80} />
+              <Image
+                key={index}
+                src={image}
+                alt={`Фото ${index}`}
+                width={1000}
+                height={1000}
+                className="w-full mt-8"
+              />
             ))}
           </div>
           <button
@@ -335,22 +385,40 @@ export default function NewsInfo({
         </div>
 
         {localOptions.map((option, index) => (
-          <div key={index} className="w-full flex flex-col gap-2 items-start">
-            <h2>{option.heading[activeLang]}</h2>
+          <div
+            key={index}
+            className="w-full flex flex-col gap-2 mb-8 items-start"
+          >
+            <h2 className="text-xl font-semibold mb-2">
+              {option.heading[activeLang]}
+            </h2>
             <p>{option.text[activeLang]}</p>
             <div className="w-full flex gap-2">
               {option.image.map((image, imgIndex) => (
-                <Image key={imgIndex} src={image} alt={`Фото опции ${imgIndex}`} width={80} height={80} />
+                <Image
+                  key={imgIndex}
+                  src={image}
+                  alt={`Фото опции ${imgIndex}`}
+                  width={1000}
+                  height={1000}
+                  className="w-full rounded-3xl"
+                />
               ))}
             </div>
             <button
-              onClick={() => setOptionModal(true)}
-              className="px-12 py-3 text-white bg-rose-500 rounded"
+              onClick={() => handleDeleteOption(index)}
+              className="bg-red-500 text-white px-4 py-2 rounded"
             >
-              Редактировать опцию
+              Удалить
             </button>
           </div>
         ))}
+        <button
+          onClick={() => setOptionModal(true)}
+          className="px-12 py-3 text-white bg-rose-500 rounded"
+        >
+          Редактировать опцию
+        </button>
 
         <button
           onClick={handleAddOption}

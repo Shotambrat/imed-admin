@@ -11,8 +11,8 @@ export default function AboutEvent() {
     return (
         <div className="w-full max-w-[1440px] mx-auto flex flex-col gap-1 px-2">
             <h2 className="text-[24px] mdx:text-[30px] mdl:text-[35px] lg:text-[36px] xl:text-[38px] font-semibold mb-4 xl:mb-[30px] uppercase">О мероприятии</h2>
-            <div className="xl:flex xl:flex-row-reverse xl:items-start">
-                <div className="bg-[#F4F7FE] p-6 w-full relative xl:w-1/4 xl:ml-5 xl:flex xl:flex-col xl:justify-between">
+            <div className="xl:flex xl:flex-row-reverse overflow-visible relative">
+                <div className="bg-[#F4F7FE] p-6 w-full sticky top-0 self-start xl:w-1/4 xl:ml-5 xl:flex xl:flex-col xl:justify-between">
                     <div>
                         <p className="flex flex-col font-semibold border-b-[1px] mb-4 pb-2 mdx:text-[22px] xl:text-[24px]">
                             <strong className="text-[#BABABA] font-normal mdx:text-[20px]">Дата</strong> 17 Июля - 25 Июля
