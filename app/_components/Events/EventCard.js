@@ -16,9 +16,9 @@ export default function EventCard({ title, imageSrc, slug }) {
       </div>
       <div className="bg-white pt-2 flex flex-col col-span-2">
         <h3 className="text-xl font-semibold text-black mb-4 mdx:text-[24px] mdx:uppercase max-w-[584px]">{title}</h3>
-        <Link href={`/events/${slug}`} className="font-semibold text-[20px]">
+        <div className="font-semibold text-[20px]">
           <GreenArrow title={"Подробнее"} />
-        </Link>
+        </div>
       </div>
     </div>
   );
