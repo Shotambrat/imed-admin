@@ -92,7 +92,7 @@ export default function EventSignUp({
   return (
     <div className="w-full max-w-[1440px] mx-auto flex flex-col gap-1 px-2 mb-[100px] mdl:mb-[150px] xl:mb-[200px] ">
       {editAdmin && (
-        <div className="fixed inset-0 h-screen w-full bg-modalBg flex justify-center items-center">
+        <div className="fixed inset-0 h-screen w-full bg-modalBg flex justify-center items-center z-[999]">
           <div className="w-full max-w-[500px] relative flex flex-col gap-8 px-4 bg-white py-8">
             <button
               onClick={() => setEditAdmin(false)}

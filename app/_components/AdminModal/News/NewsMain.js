@@ -135,6 +135,7 @@ export default function NewsMain({ closeModal }) {
       alert("Произошла ошибка при сохранении.");
     } finally {
       setLoading(false);
+      closeModal(false);
     }
   };
 

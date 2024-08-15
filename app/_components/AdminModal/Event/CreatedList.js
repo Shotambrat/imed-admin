@@ -13,6 +13,7 @@ export default function CreatedList({
   setActiveId,
   addNewItem,
   deleteItem,
+  handleSave
 }) {
   return (
     <div className="h-full w-full absolute inset-0 bg-snowy flex flex-col gap-8 justify-between pt-4">
@@ -88,7 +89,7 @@ export default function CreatedList({
         >
           Добавить элемент
         </button>
-        <button className="px-4 py-2 flex gap-2 text-white bg-redMain text-sm items-center font-semibold">
+        <button onClick={handleSave} className="px-4 py-2 flex gap-2 text-white bg-redMain text-sm items-center font-semibold">
           Сохранить
         </button>
       </div>
