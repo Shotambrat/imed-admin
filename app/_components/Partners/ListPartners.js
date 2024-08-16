@@ -5,6 +5,7 @@ import Image from 'next/image';
 import partnerPhoto from "@/public/images/aboutUs/partners/image3.png";
 import partnerPhoto1 from "@/public/images/aboutUs/partners/image58.png";
 import GreenArrow from "../Buttons/GreenArrow";
+import PartnersMain from "@/app/_components/AdminModal/Partners/PartnersMain"
 
 const partners = [
     {
@@ -58,10 +59,15 @@ export default function ListPartners() {
         };
     }, []);
 
+    const [adminModal, setAdminModal] = useState(false);
+
     const visiblePartners = showAll ? partners : partners.slice(0, 2);
 
     return (
         <div className="w-full max-w-[1440px] mx-auto px-2 flex flex-col gap-8 mt-7">
+            {
+                adminModal && <PartnersMain closeModal={setAdminModal} />
+            }
             <div className="grid grid-cols-1 gap-4 mdx:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mb-[40px] mdx:mb-[180px]">
                 {visiblePartners.map(card => (
                     <div key={card.id} className="bg-white p-4 border-[1px] border-gray-200 mdx:p-0 mdl:p-5 ">
@@ -81,6 +87,9 @@ export default function ListPartners() {
                         </div>
                     </div>
                 ))}
+                <button onClick={() => setAdminModal(true)} className="min-h-[200px] text-5xl font-bold border-2 border-dashed border-redMain text-redMain">
+                    +
+                </button>
             </div>
             <div className="flex justify-center mdx:hidden mb-[120px]">
                 <button

@@ -152,7 +152,7 @@ export default function EventMain({ closeModal }) {
       }
     } catch (error) {
       console.error("Ошибка при сохранении мероприятий:", error);
-      alert("Что заполнено не правильно, повторите позже заново.");
+      alert("Что-то заполнено не правильно или не полностью, позже повторите заново.");
     } finally {
       setLoading(false);
       closeModal(false)

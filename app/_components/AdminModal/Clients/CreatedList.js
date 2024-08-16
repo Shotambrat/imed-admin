@@ -13,7 +13,7 @@ export default function CreatedList({
   setActiveId,
   addNewItem,
   deleteItem,
-  handleSave
+  handleSave,
 }) {
   return (
     <div className="h-full w-full absolute inset-0 bg-snowy flex flex-col gap-8 justify-between pt-4">
@@ -60,8 +60,11 @@ export default function CreatedList({
               <div className="bg-white w-32 h-full flex items-center justify-center">
                 <Image
                   src={
-                    item.photo[0]
-                      ? URL.createObjectURL(item.photo[0])
+                    item.image && item.image.length > 0
+                      ? item.image[0] instanceof Blob ||
+                        item.image[0] instanceof File
+                        ? URL.createObjectURL(item.image[0])
+                        : item.image[0] // Используем как URL если это не Blob/File
                       : defaultImage
                   }
                   width={100}
@@ -72,9 +75,7 @@ export default function CreatedList({
               </div>
               <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">
                 <h2 className="overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
-                { item.name[activeLang] 
-                    ? item.name[activeLang].slice(0, 12) + '...'
-                    : "Нет заголовка" }
+                  {item.name ? item.name.slice(0, 12) + "..." : "Нет заголовка"}
                 </h2>
                 <p className="text-redMain text-start">Редактировать</p>
               </div>
@@ -89,7 +90,10 @@ export default function CreatedList({
         >
           Добавить элемент
         </button>
-        <button onClick={handleSave} className="px-4 py-2 flex gap-2 text-white bg-redMain text-sm items-center font-semibold">
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 flex gap-2 text-white bg-redMain text-sm items-center font-semibold"
+        >
           Сохранить
         </button>
       </div>
