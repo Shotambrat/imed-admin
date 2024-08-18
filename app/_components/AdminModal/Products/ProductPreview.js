@@ -1,12 +1,15 @@
 import { useState } from "react";
 import Image from "next/image";
-import VerticalCarousel from "./ProductCarousel";
-import ProductPreviewEditModal from "./ProductPreviewEditModal"; // Импорт новой модалки
+import VerticalCarousel from "./VerticalCarousel";
+import ProductPreviewEditModal from "./ProductPreviewEditModal";
 
 export default function ProductPreview({
-  product,
-  selectedLanguage,
-  handleProductChange,
+  setCreatedList,
+  activeItem,
+  setActiveItem,
+  languages,
+  activeLang,
+  setActiveLang,
 }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -18,76 +21,65 @@ export default function ProductPreview({
     setIsEditModalOpen(false);
   };
 
-  const handleSaveChanges = (updatedData) => {
-    handleProductChange(product.id, updatedData);
-    handleCloseEditModal();
+  const handleGalleryUpdate = (newGallery) => {
+    setActiveItem((prevItem) => ({
+      ...prevItem,
+      gallery: newGallery,
+    }));
   };
 
   const finalPrice =
-    product.sale && product.discount > 0
-      ? Math.round(product.originalPrice * (1 - product.discount / 100))
-      : product.originalPrice;
-
-  // Локализация текста "Новинка"
-  const newText = {
-    uz: "Yangi",
-    ru: "Новинка",
-    en: "New",
-  };
-
-  // Локализация текста "Техническая поддержка"
-  const technicalSupportText = {
-    uz: "Texnik qo'llab-quvvatlash",
-    ru: "Техническая поддержка",
-    en: "Technical Support",
-  };
+    activeItem.sale && activeItem.discount > 0
+      ? Math.round(activeItem.originalPrice * (1 - activeItem.discount / 100))
+      : activeItem.originalPrice;
 
   return (
     <div className="w-full flex flex-col lg:flex-row">
       <div className="flex-1 w-full">
-        <VerticalCarousel images={product.gallery} />
+        <VerticalCarousel
+          images={activeItem.gallery}
+          onGalleryUpdate={handleGalleryUpdate}
+        />
       </div>
       <div className="w-full flex-1 flex flex-col gap-5">
         <div className="flex gap-4">
           <h1 className="text-3xl font-semibold">
-            {product.name[selectedLanguage]}
+            {activeItem.name}
           </h1>
-          {product.new && (
+          {activeItem.new && (
             <div className="py-2 px-5 font-bold rounded-full text-[#E31E24] bg-[#FCE8E9]">
-              {newText[selectedLanguage]}
+              New
             </div>
           )}
         </div>
         <p className="text-neutral-500 leading-5">
-          {product.shortDescription[selectedLanguage]}
+          {activeItem.shortDescription[activeLang]}
         </p>
         <div className="text-3xl font-semibold text-red-500">
           {finalPrice.toLocaleString()} y.e.
-          {product.sale && product.discount > 0 && (
+          {activeItem.sale && activeItem.discount > 0 && (
             <span className="text-xl line-through text-gray-500 ml-4">
-              {product.originalPrice.toLocaleString()} y.e.
+              {activeItem.originalPrice.toLocaleString()} y.e.
             </span>
           )}
         </div>
-        {product.sale && product.discount > 0 && (
-          <div className="text-sm text-red-500">
-            -{product.discount}%
-          </div>
+        {activeItem.sale && activeItem.discount > 0 && (
+          <div className="text-sm text-red-500">-{activeItem.discount}%</div>
         )}
         <hr />
         <div className="w-full flex justify-between items-center">
           <div>
             <p>Гарантия от производителя</p>
-            {product.technical && (
+            {activeItem.technical && (
               <p>
                 <a href="/maintenance" className="text-blue-500">
-                  {technicalSupportText[selectedLanguage]}
+                  Техническая поддержка
                 </a>
               </p>
             )}
           </div>
           <Image
-            src="/path/to/logo.png" // Замени на правильный путь к логотипу
+            src="/path/to/logo.png"
             width={100}
             height={50}
             alt="Brand Logo"
@@ -102,9 +94,12 @@ export default function ProductPreview({
       </div>
       {isEditModalOpen && (
         <ProductPreviewEditModal
-          product={product}
-          selectedLanguage={selectedLanguage}
-          onSave={handleSaveChanges}
+          setCreatedList={setCreatedList}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          languages={languages}
+          activeLang={activeLang}
+          setActiveLang={setActiveLang}
           onClose={handleCloseEditModal}
         />
       )}

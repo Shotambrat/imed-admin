@@ -1,34 +1,33 @@
 import { useState, useEffect } from "react";
 
 export default function ProductPreviewEditModal({
-  product,
+  setCreatedList,
+  activeItem,
+  setActiveItem,
+  languages,
+  activeLang,
+  setActiveLang,
   onClose,
-  onSave,
 }) {
-  const [currentLanguage, setCurrentLanguage] = useState("uz");
-  const [localData, setLocalData] = useState(product);
+  const [localData, setLocalData] = useState({ ...activeItem });
 
   useEffect(() => {
-    // Обновляем состояние при смене языка
     setLocalData((prevData) => ({
       ...prevData,
-      name: {
-        ...prevData.name,
-        [currentLanguage]: prevData.name[currentLanguage],
-      },
+      name: activeItem.name,
       shortDescription: {
         ...prevData.shortDescription,
-        [currentLanguage]: prevData.shortDescription[currentLanguage],
+        [activeLang]: activeItem.shortDescription[activeLang],
       },
-      conditions: {
-        ...prevData.conditions,
-        [currentLanguage]: prevData.conditions[currentLanguage],
+      condition: {
+        ...prevData.condition,
+        [activeLang]: activeItem.condition[activeLang],
       },
     }));
-  }, [currentLanguage]);
+  }, [activeLang, activeItem]);
 
   const handleLanguageChange = (lang) => {
-    setCurrentLanguage(lang);
+    setActiveLang(lang);
   };
 
   const handleChange = (e) => {
@@ -44,35 +43,37 @@ export default function ProductPreviewEditModal({
     const { name, value } = e.target;
     setLocalData((prevData) => ({
       ...prevData,
-      [name]: {
-        ...prevData[name],
-        [currentLanguage]: value,
-      },
+      [name]: value,
     }));
   };
 
   const handleSave = () => {
-    onSave(localData);
+    setCreatedList((prevList) =>
+      prevList.map((item) =>
+        item.id === localData.id ? { ...localData } : item
+      )
+    );
+    setActiveItem(localData);
+    onClose();
   };
 
-  // Calculating the final price if promotion is active
-  const finalPrice = 
-  product && product.sale && product.discount > 0
-    ? Math.round(product.originalPrice * (1 - product.discount / 100))
-    : product?.originalPrice || 0;
+  const finalPrice =
+    localData.sale && localData.discount > 0
+      ? Math.round(localData.originalPrice * (1 - localData.discount / 100))
+      : localData.originalPrice || 0;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg w-full max-w-md h-[90%] overflow-y-scroll">
         <div className="flex gap-4 mb-4">
-          {["uz", "ru", "en"].map((lang) => (
+          {languages.map((lang) => (
             <button
               key={lang}
               onClick={() => handleLanguageChange(lang)}
               className={`px-4 py-2 text-sm font-semibold ${
-                currentLanguage === lang ? "bg-redMain text-white" : "bg-white"
+                activeLang === lang ? "bg-redMain text-white" : "bg-white"
               } border ${
-                currentLanguage === lang ? "border-redMain" : "border-gray-300"
+                activeLang === lang ? "border-redMain" : "border-gray-300"
               } rounded`}
             >
               {lang.toUpperCase()}
@@ -86,7 +87,7 @@ export default function ProductPreviewEditModal({
           <input
             type="text"
             name="name"
-            value={localData.name[currentLanguage]}
+            value={localData.name}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
           />
@@ -99,7 +100,7 @@ export default function ProductPreviewEditModal({
           </label>
           <textarea
             name="shortDescription"
-            value={localData.shortDescription[currentLanguage]}
+            value={localData.shortDescription[activeLang]}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
           />
@@ -148,22 +149,10 @@ export default function ProductPreviewEditModal({
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Условия</label>
           <textarea
-            name="conditions"
-            value={localData.conditions[currentLanguage]}
+            name="condition"
+            value={localData.condition[activeLang]}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        {/* Maintenance */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Техническая поддержка</label>
-          <input
-            type="checkbox"
-            name="maintenance"
-            checked={localData.maintenance}
-            onChange={handleChange}
-            className="w-4 h-4"
           />
         </div>
 
