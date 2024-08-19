@@ -1,6 +1,7 @@
 import ProductPreview from "./ProductPreview";
 import ProductCharacteristics from "./ProductCharacteristics";
 import Reviews from "./Reviews";
+import VideoReview from "./VideoReview";
 
 export default function ProductInfo({
   setCreatedList,
@@ -34,6 +35,14 @@ export default function ProductInfo({
         setActiveLang={setActiveLang}
       />
       <ProductCharacteristics
+        setCreatedList={setCreatedList}
+        activeItem={activeItem}
+        setActiveItem={setActiveItem}
+        languages={languages}
+        activeLang={activeLang}
+        setActiveLang={setActiveLang}
+      />
+      <VideoReview
         setCreatedList={setCreatedList}
         activeItem={activeItem}
         setActiveItem={setActiveItem}

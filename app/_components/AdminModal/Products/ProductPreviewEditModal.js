@@ -14,14 +14,17 @@ export default function ProductPreviewEditModal({
   useEffect(() => {
     setLocalData((prevData) => ({
       ...prevData,
-      name: activeItem.name,
+      name: {
+        ...prevData.name,
+        [activeLang]: activeItem.name[activeLang] || "",
+      },
       shortDescription: {
         ...prevData.shortDescription,
-        [activeLang]: activeItem.shortDescription[activeLang],
+        [activeLang]: activeItem.shortDescription[activeLang] || "",
       },
       condition: {
         ...prevData.condition,
-        [activeLang]: activeItem.condition[activeLang],
+        [activeLang]: activeItem.condition[activeLang] || "",
       },
     }));
   }, [activeLang, activeItem]);
@@ -41,19 +44,60 @@ export default function ProductPreviewEditModal({
 
   const handleLocalizedChange = (e) => {
     const { name, value } = e.target;
-    setLocalData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
-  const handleSave = () => {
+    // Обновляем локальные данные
+    const updatedLocalData = {
+      ...localData,
+      [name]: {
+        ...localData[name],
+        [activeLang]: value,
+      },
+    };
+    setLocalData(updatedLocalData);
+
+    // Обновляем активный элемент
+    const updatedActiveItem = {
+      ...activeItem,
+      [name]: updatedLocalData[name],
+    };
+    setActiveItem(updatedActiveItem);
+
+    // Обновляем список созданных элементов
     setCreatedList((prevList) =>
       prevList.map((item) =>
-        item.id === localData.id ? { ...localData } : item
+        item.id === updatedActiveItem.id ? updatedActiveItem : item
       )
     );
-    setActiveItem(localData);
+  };
+
+
+  const handleSave = () => {
+    // Ensure that all language data is preserved when saving
+    const updatedItem = {
+      ...activeItem,
+      name: localData.name,
+      shortDescription: localData.shortDescription,
+      condition: localData.condition,
+      originalPrice: localData.originalPrice,
+      discount: localData.discount,
+      sale: localData.sale,
+      new: localData.new,
+      technical: localData.technical,
+      active: localData.active,
+      popular: localData.popular,
+      brand: localData.brand,
+      category: localData.category,
+      catalog: localData.catalog,
+      gallery: localData.gallery,
+    };
+
+    setCreatedList((prevList) =>
+      prevList.map((item) =>
+        item.id === updatedItem.id ? updatedItem : item
+      )
+    );
+
+    setActiveItem(updatedItem);
     onClose();
   };
 
@@ -87,7 +131,7 @@ export default function ProductPreviewEditModal({
           <input
             type="text"
             name="name"
-            value={localData.name}
+            value={localData.name[activeLang]}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
           />

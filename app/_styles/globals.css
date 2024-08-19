@@ -147,3 +147,45 @@ body {
 .shdwcustom {
   box-shadow: 0px 4px 70px 0px rgba(64, 81, 96, 0.08);
 }
+
+
+  .custom-gallery .image-gallery-thumbnail img {
+    height: 80px; /* Высота миниатюр */
+    width: 80px; /* Ширина миниатюр */
+    object-fit: cover; /* Убедитесь, что изображение заполняет миниатюру полностью */
+  }
+
+  .custom-gallery .image-gallery-thumbnail {
+    height: 88px; /* Высота миниатюр */
+    width: 80px;
+    margin-right: 5px;
+    position: relative;
+  }
+
+  .custom-gallery .image-gallery-slide img {
+    object-fit: contain;
+    height: 400px; /* Высота основного изображения */
+    width: 100%;
+  }
+
+  .custom-gallery .image-gallery-thumbnail .delete-button {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .custom-gallery .image-gallery-thumbnail:hover .delete-button {
+    opacity: 1;
+  }

@@ -4,7 +4,6 @@ import CreatedList from "./CreatedList";
 import ProductInfo from "./ProductInfo";
 import { DNA } from "react-loader-spinner";
 import axios from "axios";
-import { Description } from "@headlessui/react";
 
 export default function ProductMain({ closeModal }) {
   const [idCounter, setIdCounter] = useState(2);
@@ -13,7 +12,11 @@ export default function ProductMain({ closeModal }) {
 
   const emptyItem = {
     id: 1,
-    name: "",
+    name: {
+      uz: "",
+      ru: "",
+      en: "",
+    },
     new: false,
     sale: false,
     shortDescription: { uz: "", ru: "", en: "" },
@@ -69,41 +72,11 @@ export default function ProductMain({ closeModal }) {
     popular: false,
     gallery: [],
     videos: [
-      {
-        url: "",
-        title: "",
-      },
+
     ],
     reviewsList: [],
+    files: [],
   };
-
-  const [reviews, setReviews] = useState({
-    id: new Date(),
-    nameDoctor: {
-      uz: "",
-      ru: "",
-      en: "",
-    },
-    position: {
-      uz: "",
-      ru: "",
-      en: "",
-    },
-    options: [
-      {
-        title: {
-          uz: "",
-          ru: "",
-          en: "",
-        },
-        value: {
-          uz: "",
-          ru: "",
-          en: "",
-        },
-      },
-    ],
-  });
 
   const [createdList, setCreatedList] = useState([{ ...emptyItem }]);
   const [activeItem, setActiveItem] = useState(createdList[0]);

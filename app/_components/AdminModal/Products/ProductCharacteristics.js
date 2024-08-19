@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import mindray from "@/public/images/aboutUs/partners/image58.png";
 import arrowred from "@/public/svg/arrow-right-red.svg";
+import Modal from "./AttachedFiles";
 
 export default function ProductCharacteristics({
   setCreatedList,
@@ -15,27 +16,64 @@ export default function ProductCharacteristics({
   const [modalContent, setModalContent] = useState([]);
   const [editType, setEditType] = useState(null);
 
-  const data = [
+  const files = [
     {
-      category: 'description',
-      title: 'Описание',
-      desc: true,
-      data: activeItem.descriptions.map(
-        (block) => `${block.title[activeLang] || ""}: ${block.value[activeLang] || ""}`
-      ).join("\n"),
+      id: 7,
+      name: "7-Zoncare%2",
+      size: "6.30 Mb",
+      downloadLink:
+        "http://213.230.91.55:8130/v1/product/file/7-Zoncare%20Catalog%20--2024.pdf",
     },
     {
-      category: 'characteristics',
-      title: 'Характеристики',
+      id: 8,
+      name: "8-Quotation%2",
+      size: "0.27 Mb",
+      downloadLink:
+        "http://213.230.91.55:8130/v1/product/file/8-Quotation%20for%20Browiner%20X-ray.pdf",
+    },
+    {
+      id: 9,
+      name: "9-Perla%20Denta",
+      size: "0.18 Mb",
+      downloadLink:
+        "http://213.230.91.55:8130/v1/product/file/9-Perla%20Dental%20Unit%20Product%20List.pdf",
+    },
+  ];
+
+  const [modal, setModal] = useState(false);
+
+  const openModal = () => {
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    setModal(false);
+  };
+
+  const data = [
+    {
+      category: "description",
+      title: "Описание",
+      desc: true,
+      data: activeItem.descriptions
+        .map(
+          (block) =>
+            `${block.title[activeLang] || ""}: ${block.value[activeLang] || ""}`
+        )
+        .join("\n"),
+    },
+    {
+      category: "characteristics",
+      title: "Характеристики",
       desc: false,
       data: activeItem.characteristics,
     },
     {
-      category: 'client',
-      title: 'Клиент',
+      category: "client",
+      title: "Клиент",
       desc: false,
       data: activeItem.clients,
-    }
+    },
   ];
 
   const [active, setActive] = useState(data[0].category);
@@ -47,8 +85,13 @@ export default function ProductCharacteristics({
           title: { uz: "", ru: "", en: "", ...block.title },
           value: { uz: "", ru: "", en: "", ...block.value },
         }))
-      : [{ title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } }];
-    
+      : [
+          {
+            title: { uz: "", ru: "", en: "" },
+            value: { uz: "", ru: "", en: "" },
+          },
+        ];
+
     setModalContent(initializedContent);
     setEditType(type);
     setIsModalOpen(true);
@@ -88,12 +131,50 @@ export default function ProductCharacteristics({
     } else if (editType === "clients") {
       updatedItem.clients = modalContent;
     }
+
+    // Update the active item state immediately
     setActiveItem(updatedItem);
+
+    // Ensure this update only applies to the current product
     setCreatedList((prevList) =>
       prevList.map((item) => (item.id === activeItem.id ? updatedItem : item))
     );
+
     handleCloseModal();
   };
+
+  useEffect(() => {
+    // Update the filtered data when modal content is saved
+    const updatedData = [
+      {
+        category: "description",
+        title: "Описание",
+        desc: true,
+        data: activeItem.descriptions
+          .map(
+            (block) =>
+              `${block.title[activeLang] || ""}: ${
+                block.value[activeLang] || ""
+              }`
+          )
+          .join("\n"),
+      },
+      {
+        category: "characteristics",
+        title: "Характеристики",
+        desc: false,
+        data: activeItem.characteristics,
+      },
+      {
+        category: "client",
+        title: "Клиент",
+        desc: false,
+        data: activeItem.clients,
+      },
+    ];
+
+    setFiltered(updatedData.find((item) => item.category === active));
+  }, [activeItem, activeLang, active]);
 
   return (
     <div className="w-full flex flex-col gap-5">
@@ -106,10 +187,11 @@ export default function ProductCharacteristics({
                 setFiltered(item);
               }}
               key={index}
-              className={`z-10 w-auto text-lg transition-text font-medium ${active === item.category
-                ? "text-[#E31E24] border-b-2 border-b-[#E31E24]"
-                : "text-neutral-400"
-                }`}
+              className={`z-10 w-auto text-lg transition-text font-medium ${
+                active === item.category
+                  ? "text-[#E31E24] border-b-2 border-b-[#E31E24]"
+                  : "text-neutral-400"
+              }`}
             >
               <h3 className="my-2 whitespace-nowrap">{item.title}</h3>
             </button>
@@ -119,40 +201,52 @@ export default function ProductCharacteristics({
       </div>
       <div>
         {filtered.desc ? (
-          <p className="text-lg leading-5 whitespace-pre-line">{filtered.data}</p>
+          <p className="text-lg leading-5 whitespace-pre-line">
+            {filtered.data}
+          </p>
         ) : (
           <div className="flex flex-col gap-6 w-full">
-            {filtered.category === 'characteristics' && (
+            {filtered.category === "characteristics" &&
               filtered.data.map((item, i) => (
                 <div key={i} className="w-full flex gap-3">
                   <p className="w-full text-neutral-400 max-w-[100px] md:max-w-[150px] mdx:max-w-[200px] lg:max-w-[400px]">
                     {item.title[activeLang] || ""}
                   </p>
                   <div className="flex w-full flex-col">
-                    {item.value[activeLang].split('\n').map((line, j) => (
+                    {item.value[activeLang].split("\n").map((line, j) => (
                       <p key={j}>{line}</p>
                     ))}
                   </div>
                 </div>
-              ))
-            )}
+              ))}
 
-            {filtered.category === 'client' && (
+            {filtered.category === "client" && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {filtered.data.map((client, index) => (
                   <div key={index} className="border p-4">
                     <div className="flex flex-col items-center mdx:flex-row">
-                      <Image src={client.logo} alt={client.name} className="w-full max-w-[320px] h-auto mb-2 p-5 object-contain lg:max-w-[340px]" />
+                      <Image
+                        src={client.logo}
+                        alt={client.name}
+                        className="w-full max-w-[320px] h-auto mb-2 p-5 object-contain lg:max-w-[340px]"
+                      />
                       <div className="mt-2">
-                        <h3 className="font-bold text-lg mdx:text-2xl mdx:mb-2">{client.name}</h3>
-                        <p className="text-[#808080] mdx:mb-4">{client.description}</p>
-                        <button className="text-[#E31E24] mt-2 flex items-center">Подробнее <Image
-                          src={arrowred}
-                          width={100}
-                          height={100}
-                          alt="Arrow Icon"
-                          className="w-5 h-5"
-                        /></button>
+                        <h3 className="font-bold text-lg mdx:text-2xl mdx:mb-2">
+                          {client.name}
+                        </h3>
+                        <p className="text-[#808080] mdx:mb-4">
+                          {client.description}
+                        </p>
+                        <button className="text-[#E31E24] mt-2 flex items-center">
+                          Подробнее{" "}
+                          <Image
+                            src={arrowred}
+                            width={100}
+                            height={100}
+                            alt="Arrow Icon"
+                            className="w-5 h-5"
+                          />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -163,28 +257,31 @@ export default function ProductCharacteristics({
         )}
       </div>
 
-      <div className="flex justify-start mt-2">
+      <div className="flex justify-start gap-4 mt-2">
+        <button
+          className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C]"
+          onClick={() =>
+            handleOpenModal(activeItem.descriptions, "description")
+          }
+        >
+          Редактировать Описание
+        </button>
+        <button
+          className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C]"
+          onClick={() =>
+            handleOpenModal(activeItem.characteristics, "characteristics")
+          }
+        >
+          Редактировать Характеристики
+        </button>
         <button
           className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C]"
           onClick={() => handleOpenModal(activeItem.clients, "clients")}
         >
           Редактировать Клиенты
         </button>
-        <button
-          className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C] ml-4"
-          onClick={() => handleOpenModal(activeItem.characteristics, "characteristics")}
-        >
-          Редактировать Характеристики
-        </button>
-        <button
-          className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C] ml-4"
-          onClick={() => handleOpenModal(activeItem.descriptions, "description")}
-        >
-          Редактировать Описание
-        </button>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg w-full max-w-lg h-auto">
@@ -193,10 +290,11 @@ export default function ProductCharacteristics({
                 <button
                   key={lang}
                   onClick={() => setActiveLang(lang)}
-                  className={`px-4 py-2 text-sm font-semibold ${activeLang === lang
-                    ? "bg-redMain text-white"
-                    : "bg-white text-black"
-                    } border rounded`}
+                  className={`px-4 py-2 text-sm font-semibold ${
+                    activeLang === lang
+                      ? "bg-redMain text-white"
+                      : "bg-white text-black"
+                  } border rounded`}
                 >
                   {lang.toUpperCase()}
                 </button>
@@ -206,42 +304,43 @@ export default function ProductCharacteristics({
               {editType === "description"
                 ? "Описание товара"
                 : editType === "characteristics"
-                  ? "Характеристики товара"
-                  : "Клиент"}
+                ? "Характеристики товара"
+                : "Клиент"}
             </h2>
-            {Array.isArray(modalContent) && modalContent.map((block, index) => (
-              <div key={index} className="mb-6 border-b pb-4">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">
-                    Заголовок ({activeLang})
-                  </label>
-                  <input
-                    type="text"
-                    name={activeLang}
-                    value={block.title?.[activeLang] || ""}
-                    onChange={(e) => handleChange(e, index, "title")}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
+            {Array.isArray(modalContent) &&
+              modalContent.map((block, index) => (
+                <div key={index} className="mb-6 border-b pb-4">
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Заголовок ({activeLang})
+                    </label>
+                    <input
+                      type="text"
+                      name={activeLang}
+                      value={block.title[activeLang] || ""}
+                      onChange={(e) => handleChange(e, index, "title")}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Описание ({activeLang})
+                    </label>
+                    <textarea
+                      name={activeLang}
+                      value={block.value[activeLang] || ""}
+                      onChange={(e) => handleChange(e, index, "value")}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleRemoveBlock(index)}
+                    className="py-2 px-4 bg-red-500 text-white rounded"
+                  >
+                    Удалить блок
+                  </button>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">
-                    Описание ({activeLang})
-                  </label>
-                  <textarea
-                    name={activeLang}
-                    value={block.value?.[activeLang] || ""}
-                    onChange={(e) => handleChange(e, index, "value")}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                <button
-                  onClick={() => handleRemoveBlock(index)}
-                  className="py-2 px-4 bg-red-500 text-white rounded"
-                >
-                  Удалить блок
-                </button>
-              </div>
-            ))}
+              ))}
             <button
               onClick={handleAddBlock}
               className="py-2 px-4 bg-blue-500 text-white rounded mb-4"
@@ -264,6 +363,23 @@ export default function ProductCharacteristics({
             </div>
           </div>
         </div>
+      )}
+
+      <div className="flex justify-start mt-2">
+        <button
+          className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C]"
+          onClick={openModal}
+        >
+          Прикрепить файлы
+        </button>
+      </div>
+      {modal && (
+        <Modal
+          setCreatedList={setCreatedList}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          closeModal={closeModal}
+        />
       )}
     </div>
   );

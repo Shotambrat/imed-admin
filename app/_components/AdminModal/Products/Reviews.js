@@ -1,83 +1,339 @@
-"use client"
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import mindrayDC60 from '@/public/images/Face.png';
+"use client";
+import { useState } from "react";
+import Image from "next/image";
+import mindrayDC60 from "@/public/images/Face.png";
 
-const reviews = [
-    {
-        doctor: 'Иванов Иван Иванович',
-        title: 'Врач УЗИ',
-        summary: 'Наше медицинское учреждение недавно приобрело УЗИ-аппарат Resona R9, и я хотел бы поделиться своими впечатлениями об этом устройстве.',
-        advantages: [
-            'Исключительное качество изображения: Resona R9 демонстрирует превосходное качество изображения благодаря использованию передовых технологий, таких как ZST+ (Zone Sonography Technology). Это позволяет нам получать четкие и детализированные изображения, что существенно улучшает точность диагностики.',
-            'Инновационные функции: Аппарат оснащен множеством современных функций, включая эластографию, 3D/4D-визуализацию и автоматическое измерение параметров. Эти функции расширяют возможности диагностики и делают его универсальным инструментом для различных медицинских исследований.',
-            'Удобный интерфейс: Resona R9 имеет интуитивно понятный интерфейс, что облегчает его использование. Быстрый доступ к настройкам и параметрам позволяет врачу эффективно и без задержек проводить исследования.'
-        ],
-        disadvantages: [
-            'Высокая стоимость: Resona R9 относится к премиум-классу, и его стоимость может быть значительной для небольших клиник. Однако, учитывая его возможности и функциональность, это можно рассматривать как долгосрочную инвестицию в качество диагностики.',
-            'Обучение персонала: Из-за большого количества функций и возможностей, новому персоналу может потребоваться время для полного освоения аппарата. Важно обеспечить дополнительное обучение для максимального использования потенциала устройства.'
-        ],
-        conclusion: 'Resona R9 – это высокотехнологичный УЗИ-аппарат, который впечатляет своими возможностями и качеством изображения. Несмотря на высокую стоимость и необходимость обучения персонала, он обладает широкими диагностическими возможностями и разнообразит клинические потребности. Этот аппарат значительно повышает уровень диагностики в нашей клинике, и я рекомендую его для медицинских учреждений, стремящихся к наивысшему качеству диагностики и улучшению медицинских исследований.'
-    },
-    {
-        doctor: 'Петров Петр Петрович',
-        title: 'Врач УЗИ',
-        summary: 'Недавно мы ввели в эксплуатацию УЗИ-аппарат Resona R9 в нашем медицинском центре, и я хочу поделиться своим опытом использования.',
-        advantages: [
-            'Высокое качество изображения: Resona R9 использует технологии ZST+ (Zone Sonography Technology), что позволяет получать четкие и детализированные изображения.',
-            'Многофункциональность: Аппарат оснащен эластографией, 3D/4D-визуализацией и автоматическим измерением параметров, что расширяет диагностические возможности.',
-            'Удобный интерфейс: Интуитивно понятный интерфейс упрощает использование и настройку аппарата.'
-        ],
-        disadvantages: [
-            'Стоимость: Высокая стоимость может стать проблемой для небольших клиник.',
-            'Обучение: Персоналу потребуется время на обучение для полного освоения всех возможностей аппарата.'
-        ],
-        conclusion: 'Resona R9 – это современный УЗИ-аппарат, который предоставляет широкий спектр диагностических возможностей и высокое качество изображения. Несмотря на высокую стоимость и необходимость обучения, этот аппарат является отличным выбором для медицинских учреждений.'
-    }
-];
+export default function Reviews({
+  setCreatedList,
+  activeItem,
+  setActiveItem,
+  languages,
+  activeLang,
+  setActiveLang,
+}) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    nameDoctor: { uz: "", ru: "", en: "" },
+    position: { uz: "", ru: "", en: "" },
+    options: [
+      {
+        title: { uz: "", ru: "", en: "" },
+        value: { uz: "", ru: "", en: "" },
+      },
+    ],
+    avatarImage: "",
+  });
 
-export default function Reviews() {
-    const [showAll, setShowAll] = useState(false);
-    const visibleReviews = showAll ? reviews : reviews.slice(0, 1);
+  const [editType, setEditType] = useState(null);
 
-    return (
-        <div className="max-w-[1440px] mx-auto p-4">
-            <h2 className='uppercase text-[25px] font-semibold mdx:text-[25px]'>Рецензии от врачей</h2>
-            {visibleReviews.map((review, index) => (
-                <div key={index} className="bg-white p-6 mb-6">
-                    <div className="flex items-center mb-4">
-                        <Image src={mindrayDC60} alt="Doctor" width={60} height={60} className="rounded-full mr-4" />
-                        <div>
-                            <h2 className="text-xl font-bold">{review.doctor}</h2>
-                            <h3 className="text-md text-gray-400">{review.title}</h3>
-                        </div>
-                    </div>
-                    <p className="mb-4">{review.summary}</p>
-                    <h4 className="text-lg font-semibold mb-2">Основные преимущества</h4>
-                    <ul className="list-disc pl-5 mb-4">
-                        {review.advantages.map((advantage, index) => (
-                            <li key={index}>{advantage}</li>
-                        ))}
-                    </ul>
-                    <h4 className="text-lg font-semibold mb-2">Недостатки</h4>
-                    <ul className="list-disc pl-5 mb-4">
-                        {review.disadvantages.map((disadvantage, index) => (
-                            <li key={index}>{disadvantage}</li>
-                        ))}
-                    </ul>
-                    <h4 className="text-lg font-semibold mb-2">Общий вывод</h4>
-                    <p>{review.conclusion}</p>
-                </div>
-            ))}
-            <div className="flex justify-center">
-                <button
-                    onClick={() => setShowAll(!showAll)}
-                    className="bg-[#E94B50] text-white py-3 px-[35px] mdx:px-[50px]"
-                >
-                    {showAll ? 'Скрыть' : 'Показать все'}
-                </button>
-            </div>
-        </div>
+  const handleOpenModal = (content = {}, type) => {
+    setModalContent(
+      content && content.nameDoctor
+        ? content
+        : {
+            nameDoctor: { uz: "", ru: "", en: "" },
+            position: { uz: "", ru: "", en: "" },
+            options: [
+              {
+                title: { uz: "", ru: "", en: "" },
+                value: { uz: "", ru: "", en: "" },
+              },
+            ],
+            avatarImage: "",
+          }
     );
+    setEditType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalContent({
+      nameDoctor: { uz: "", ru: "", en: "" },
+      position: { uz: "", ru: "", en: "" },
+      options: [
+        {
+          title: { uz: "", ru: "", en: "" },
+          value: { uz: "", ru: "", en: "" },
+        },
+      ],
+      avatarImage: "",
+    });
+    setEditType(null);
+  };
+
+  const handleChange = (e, index, field, subField) => {
+    const { name, value } = e.target;
+    const updatedContent = { ...modalContent };
+    if (subField) {
+      updatedContent[field][index][subField][name] = value;
+    } else {
+      updatedContent[field][name] = value;
+    }
+    setModalContent(updatedContent);
+  };
+
+  const handleAddBlock = () => {
+    setModalContent((prevContent) => ({
+      ...prevContent,
+      options: [
+        ...prevContent.options,
+        { title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } },
+      ],
+    }));
+  };
+
+  const handleRemoveBlock = (index) => {
+    const updatedContent = {
+      ...modalContent,
+      options: modalContent.options.filter((_, i) => i !== index),
+    };
+    setModalContent(updatedContent);
+  };
+
+  const handleSave = () => {
+    const updatedItem = { ...activeItem };
+    updatedItem.reviewsList = [
+      ...updatedItem.reviewsList,
+      { ...modalContent, id: new Date().getTime() },
+    ];
+    setActiveItem(updatedItem);
+    setCreatedList((prevList) =>
+      prevList.map((item) => (item.id === activeItem.id ? updatedItem : item))
+    );
+    handleCloseModal();
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setModalContent((prevContent) => ({
+          ...prevContent,
+          avatarImage: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const [showAll, setShowAll] = useState(false);
+  const visibleReviews = showAll
+    ? activeItem.reviewsList
+    : activeItem.reviewsList.slice(0, 1);
+
+  const handleEditReview = (index) => {
+    const reviewToEdit = activeItem.reviewsList[index];
+    setModalContent(reviewToEdit);
+    setEditType("review");
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteReview = (index) => {
+    const updatedReviews = activeItem.reviewsList.filter(
+      (_, i) => i !== index
+    );
+    const updatedItem = { ...activeItem, reviewsList: updatedReviews };
+    setActiveItem(updatedItem);
+    setCreatedList((prevList) =>
+      prevList.map((item) => (item.id === activeItem.id ? updatedItem : item))
+    );
+  };
+
+  return (
+    <div className="w-full">
+      <h2 className="uppercase text-[25px] font-semibold mdx:text-[25px] mb-4">
+        Рецензии от врачей
+      </h2>
+      {visibleReviews.map((review, index) => (
+        <div key={index} className="bg-white p-6 mb-6 shadow-lg rounded-lg w-full">
+          <div className="flex items-center mb-4">
+            <Image
+              src={review.avatarImage || mindrayDC60}
+              alt="Doctor"
+              width={60}
+              height={60}
+              className="rounded-full mr-4"
+            />
+            <div>
+              <h2 className="text-xl font-bold">
+                {review.nameDoctor[activeLang]}
+              </h2>
+              <h3 className="text-md text-gray-400">
+                {review.position[activeLang]}
+              </h3>
+            </div>
+          </div>
+          {review.options.map((option, i) => (
+            <div key={i} className="mb-4">
+              <h4 className="text-lg font-semibold mb-2">
+                {option.title[activeLang]}
+              </h4>
+              <p className="whitespace-pre-line">{option.value[activeLang]}</p>
+            </div>
+          ))}
+          <div className="flex justify-start mt-4">
+            <button
+              onClick={() => handleEditReview(index)}
+              className="py-2 px-4 border-redMain border text-redMain rounded mr-2"
+            >
+              Редактировать
+            </button>
+            <button
+              onClick={() => handleDeleteReview(index)}
+              className="py-2 px-4 bg-red-500 text-white rounded"
+            >
+              Удалить
+            </button>
+          </div>
+        </div>
+      ))}
+      <div className="flex justify-center">
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="bg-[#E94B50] text-white py-3 px-[35px] mdx:px-[50px]"
+        >
+          {showAll ? "Скрыть" : "Показать все"}
+        </button>
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handleOpenModal(null, "review")}
+          className="bg-[#E94B50] text-white py-3 px-[35px] mdx:px-[50px]"
+        >
+          Написать рецензию
+        </button>
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg w-full max-w-lg overflow-y-scroll h-[90%]">
+            <div className="flex justify-end mb-4">
+              {languages.map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => setActiveLang(lang)}
+                  className={`px-4 py-2 text-sm font-semibold ${
+                    activeLang === lang
+                      ? "bg-redMain text-white"
+                      : "bg-white text-black"
+                  } border rounded`}
+                >
+                  {lang.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <h2 className="text-2xl mb-4">Редактировать рецензию</h2>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">
+                ФИО врача ({activeLang})
+              </label>
+              <input
+                type="text"
+                name={activeLang}
+                value={modalContent.nameDoctor[activeLang] || ""}
+                onChange={(e) => handleChange(e, null, "nameDoctor")}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">
+                Должность врача ({activeLang})
+              </label>
+              <input
+                type="text"
+                name={activeLang}
+                value={modalContent.position[activeLang] || ""}
+                onChange={(e) => handleChange(e, null, "position")}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">
+                Фото врача
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              {modalContent.avatarImage && (
+                <div className="mt-4">
+                  <Image
+                    src={modalContent.avatarImage}
+                    alt="Avatar Preview"
+                    width={100}
+                    height={100}
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+            </div>
+
+            {modalContent.options.map((option, index) => (
+              <div key={index} className="mb-6 border-b pb-4">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">
+                    Заголовок ({activeLang})
+                  </label>
+                  <input
+                    type="text"
+                    name={activeLang}
+                    value={option.title[activeLang] || ""}
+                    onChange={(e) =>
+                      handleChange(e, index, "options", "title")
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">
+                    Текст ({activeLang})
+                  </label>
+                  <textarea
+                    name={activeLang}
+                    value={option.value[activeLang] || ""}
+                    onChange={(e) =>
+                      handleChange(e, index, "options", "value")
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                </div>
+                <button
+                  onClick={() => handleRemoveBlock(index)}
+                  className="py-2 px-4 bg-red-500 text-white rounded"
+                >
+                  Удалить блок
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={handleAddBlock}
+              className="py-2 px-4 bg-blue-500 text-white rounded mb-4"
+            >
+              Добавить блок
+            </button>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={handleSave}
+                className="py-2 px-4 bg-blue-500 text-white rounded"
+              >
+                Сохранить
+              </button>
+              <button
+                onClick={handleCloseModal}
+                className="py-2 px-4 bg-gray-300 text-black rounded"
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

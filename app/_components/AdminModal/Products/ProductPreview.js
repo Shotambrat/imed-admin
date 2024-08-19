@@ -34,7 +34,7 @@ export default function ProductPreview({
       : activeItem.originalPrice;
 
   return (
-    <div className="w-full flex flex-col lg:flex-row">
+    <div className="w-full flex flex-col lg:flex-row gap-6">
       <div className="flex-1 w-full">
         <VerticalCarousel
           images={activeItem.gallery}
@@ -44,7 +44,7 @@ export default function ProductPreview({
       <div className="w-full flex-1 flex flex-col gap-5">
         <div className="flex gap-4">
           <h1 className="text-3xl font-semibold">
-            {activeItem.name}
+            {activeItem.name[activeLang]}
           </h1>
           {activeItem.new && (
             <div className="py-2 px-5 font-bold rounded-full text-[#E31E24] bg-[#FCE8E9]">
@@ -69,7 +69,11 @@ export default function ProductPreview({
         <hr />
         <div className="w-full flex justify-between items-center">
           <div>
-            <p>Гарантия от производителя</p>
+            <div>
+              <p className="leading-5 whitespace-pre-line">
+                {activeItem.condition[activeLang]}
+              </p>
+            </div>
             {activeItem.technical && (
               <p>
                 <a href="/maintenance" className="text-blue-500">

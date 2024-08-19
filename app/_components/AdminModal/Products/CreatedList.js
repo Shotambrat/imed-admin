@@ -75,7 +75,7 @@ export default function CreatedList({
               </div>
               <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">
                 <h2 className="overflow-x-hidden whitespace-nowrap w-full font-semibold text-start">
-                  {item.name ? item.name.slice(0, 12) + "..." : "Нет заголовка"}
+                  {item.name[activeLang] ? item.name[activeLang].slice(0, 12) + "..." : "Нет заголовка"}
                 </h2>
                 <p className="text-redMain text-start">Редактировать</p>
               </div>
