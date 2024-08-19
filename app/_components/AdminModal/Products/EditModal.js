@@ -36,7 +36,14 @@ export default function EditModal({ filtered, activeLang, onSave, onClose }) {
   };
 
   const handleSave = () => {
-    onSave(localData);
+    // Убедитесь, что вы правильно обновляете состояние в activeItem и setCreatedList
+    setCreatedList((prevList) =>
+      prevList.map((item) =>
+        item.id === localData.id ? { ...item, ...localData } : item
+      )
+    );
+    setActiveItem(localData);
+    onClose(); // Закрываем модальное окно после сохранения
   };
 
   return (
@@ -46,7 +53,7 @@ export default function EditModal({ filtered, activeLang, onSave, onClose }) {
         {filtered.category === 'description' ? (
           <textarea
             name="description"
-            value={localData}
+            value={typeof localData === 'string' ? localData : localData[activeLang]}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded"
           />

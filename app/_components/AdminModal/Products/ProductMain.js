@@ -17,18 +17,20 @@ export default function ProductMain({ closeModal }) {
     new: false,
     sale: false,
     shortDescription: { uz: "", ru: "", en: "" },
-    description: {
-      title: {
-        uz: "",
-        ru: "",
-        en: "",
+    descriptions: [
+      {
+        title: {
+          uz: "",
+          ru: "",
+          en: "",
+        },
+        value: {
+          uz: "",
+          ru: "",
+          en: "",
+        },
       },
-      value: {
-        uz: "",
-        ru: "",
-        en: "",
-      },
-    },
+    ],
     discount: 0,
     originalPrice: 0,
     condition: { uz: "", ru: "", en: "" },
@@ -37,18 +39,20 @@ export default function ProductMain({ closeModal }) {
     category: { id: 1 },
     catalog: { id: 1 },
     clients: [{ id: 1 }],
-    characteristics: {
-      title: {
-        uz: "",
-        ru: "",
-        en: "",
+    characteristics: [
+      {
+        title: {
+          uz: "",
+          ru: "",
+          en: "",
+        },
+        value: {
+          uz: "",
+          ru: "",
+          en: "",
+        },
       },
-      value: {
-        uz: "",
-        ru: "",
-        en: "",
-      },
-    },
+    ],
     maintenance: {
       title: {
         uz: "",
