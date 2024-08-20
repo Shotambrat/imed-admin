@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import editIcon from "@/public/svg/Radiobutton.svg";
+import editIcon from "@/public/svg/RadioButton.svg";
 import deleteIcon from "@/public/svg/close.svg";
 import addIcon from "@/public/svg/questionsent.svg";
 import LocationModal from "./LocationModal";
