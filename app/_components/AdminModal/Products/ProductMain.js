@@ -22,23 +22,44 @@ export default function ProductMain({ closeModal }) {
     new: false,
     sale: false,
     shortDescription: { uz: "", ru: "", en: "" },
-    descriptions: [{ title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } }],
+    descriptions: [
+      { title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } },
+    ],
     discount: 0,
     originalPrice: 0,
-    condition: { uz: "", ru: "", en: "" },
+    conditions: { uz: "", ru: "", en: "" },
     technical: true,
     brand: { id: 1 },
     category: { id: 1 },
     catalog: { id: 1 },
     clients: [{ id: 1 }],
-    characteristics: [{ title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } }],
-    maintenance: { title: { uz: "", ru: "", en: "" }, text: { uz: "", ru: "", en: "" } },
+    characteristics: [
+      { title: { uz: "", ru: "", en: "" }, value: { uz: "", ru: "", en: "" } },
+    ],
+    maintenance: {
+      title: { uz: "", ru: "", en: "" },
+      text: { uz: "", ru: "", en: "" },
+    },
     active: true,
     popular: false,
     gallery: [],
     videos: [],
     reviewsList: [],
     files: [],
+    maintenance: [
+      {
+        title: {
+          uz: "uz",
+          ru: "ru",
+          en: "en",
+        },
+        text: {
+          uz: "uz",
+          ru: "ru",
+          en: "en",
+        },
+      },
+    ],
   };
 
   // Initialize state with one empty item
@@ -75,6 +96,24 @@ export default function ProductMain({ closeModal }) {
     }
   };
 
+  // Convert Blob URL to File
+  const blobToFile = async (blobUrl, filename) => {
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  };
+
+  function dataURItoFile(dataURI, filename) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new File([ab], filename, { type: mimeString });
+  }
+
   // Save all items by sending them to the server
   const handleSaveAllItems = async () => {
     setLoading(true);
@@ -92,54 +131,82 @@ export default function ProductMain({ closeModal }) {
 
     try {
       for (const item of createdList) {
-
-        const { gallery, files, reviewsList, ...other} = item;
+        const { gallery, files, id, catalog, reviewsList, ...other } = item;
+        const { clients, ...others} = other;
         const formData = new FormData();
 
-        console.log(gallery)
-
-        formData.append("json", JSON.stringify(other));
-
-        gallery.forEach((file) => {
-          formData.append("gallery", file);
+        const clientsFiltered = clients.map(item => {
+          return {
+            id: item.id
+          };
         });
 
-        const response = await axios.post("https://imed.uz/api/v1/product",formData, 
+        console.log("hhhh", clientsFiltered)
+
+        formData.append("json", JSON.stringify({...others, clients: clientsFiltered}));
+
+        for (const [index, file] of gallery.entries()) {
+          if (typeof file === "string" && file.startsWith("blob:")) {
+            const convertedFile = await blobToFile(file, `image-${index}.png`);
+            formData.append("gallery", convertedFile);
+          } else if (file instanceof File) {
+            formData.append("gallery", file);
+          }
+        }
+
+        const response = await axios.post(
+          "https://imed.uz/api/v1/product",
+          formData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
             },
           }
-         );
+        );
 
-        console.log("Response of fetch", response)
         const productId = response.data.data.id;
-        
+
         // Optionally handle file uploads
         if (files.length > 0) {
-          const formData = new FormData();
-          files.forEach((file) => formData.append("files", file));
-          formData.append("product-id", productId);
-          
-          await axios.post("https://imed.uz/api/v1/product/file", formData);
+          const fileData = new FormData();
+          files.forEach((file) => fileData.append("files", file));
+          fileData.append("product-id", productId);
+
+          await axios.post("https://imed.uz/api/v1/product/file", fileData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
         }
-        
-        
+
         // Optionally handle reviews
         for (const review of reviewsList) {
           const reviewFormData = new FormData();
-          reviewFormData.append("json", JSON.stringify({
-            nameDoctor: review.nameDoctor,
-            position: review.position,
-            options: review.options,
-          }));
+          console.log(review)
+          reviewFormData.append(
+            "json",
+            JSON.stringify({
+              nameDoctor: review.nameDoctor,
+              position: review.position,
+              options: review.options,
+            })
+          );
           reviewFormData.append("product-id", productId);
-          if (review.avatarImage) {
-            reviewFormData.append("doctor-photo", review.avatarImage);
+          if (review.avatarImage && review.avatarImage.startsWith("data:image/")) {
+            const reviewFile = dataURItoFile(review.avatarImage, "avatar.png");
+            reviewFormData.append("doctor-photo", reviewFile);
           }
 
-          await axios.post("https://imed.uz/api/v1/product/review", reviewFormData);
+          await axios.post(
+            "https://imed.uz/api/v1/product/review",
+            reviewFormData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
       }
       alert("Все продукты успешно созданы и данные загружены!");
@@ -186,9 +253,7 @@ export default function ProductMain({ closeModal }) {
         />
       </div>
       {error && (
-        <div className="absolute bottom-4 left-4 text-red-600">
-          {error}
-        </div>
+        <div className="absolute bottom-4 left-4 text-red-600">{error}</div>
       )}
     </div>
   );

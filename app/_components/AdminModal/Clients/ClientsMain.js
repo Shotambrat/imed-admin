@@ -131,7 +131,7 @@ export default function ClientsMain({ closeModal }) {
           JSON.stringify({
             name: client.name,
             description: client.description,
-            location: { id: client.location?.id || null },
+            location: { id: client.location?.id || 12 },
           })
         );
 

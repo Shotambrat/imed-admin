@@ -71,7 +71,7 @@ export default function ProductPreview({
           <div>
             <div>
               <p className="leading-5 whitespace-pre-line">
-                {activeItem.condition[activeLang]}
+                {activeItem.conditions[activeLang]}
               </p>
             </div>
             {activeItem.technical && (

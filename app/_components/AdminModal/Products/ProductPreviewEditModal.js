@@ -22,9 +22,9 @@ export default function ProductPreviewEditModal({
         ...prevData.shortDescription,
         [activeLang]: activeItem.shortDescription[activeLang] || "",
       },
-      condition: {
-        ...prevData.condition,
-        [activeLang]: activeItem.condition[activeLang] || "",
+      conditions: {
+        ...prevData.conditions,
+        [activeLang]: activeItem.conditions[activeLang] || "",
       },
     }));
   }, [activeLang, activeItem]);
@@ -77,7 +77,7 @@ export default function ProductPreviewEditModal({
       ...activeItem,
       name: localData.name,
       shortDescription: localData.shortDescription,
-      condition: localData.condition,
+      conditions: localData.conditions,
       originalPrice: localData.originalPrice,
       discount: localData.discount,
       sale: localData.sale,
@@ -193,8 +193,8 @@ export default function ProductPreviewEditModal({
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Условия</label>
           <textarea
-            name="condition"
-            value={localData.condition[activeLang]}
+            name="conditions"
+            value={localData.conditions[activeLang]}
             onChange={handleLocalizedChange}
             className="w-full p-2 border border-gray-300 rounded"
           />
