@@ -1,22 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreatedList from "./CreatedList";
+import ClientsInfo from "./ClientsInfo";
 import { DNA } from "react-loader-spinner";
 import axios from "axios";
-import ClientsInfo from "./ClientsInfo";
 
-export default function NewsMain({ closeModal }) {
+export default function ClientsMain({ closeModal }) {
   const [idCounter, setIdCounter] = useState(2);
   const [activeId, setActiveId] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const [createdList, setCreatedList] = useState([]);
+  const [activeItem, setActiveItem] = useState(null);
+  const languages = ["uz", "ru", "en"];
+  const [activeLang, setActiveLang] = useState(languages[0]);
 
-  const emptyItem = {
+  useEffect(() => {
+    fetchLocations();
+    initializeEmptyClient();
+  }, []);
 
-    id: 1,
+  const fetchLocations = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://213.230.91.55:8130/v1/location");
+      setLocations(response.data.data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const [createdList, setCreatedList] = useState([{ ...emptyItem }]);
-  const [activeItem, setActiveItem] = useState(createdList[0]);
+  const initializeEmptyClient = () => {
+    const emptyClient = {
+      id: idCounter,
+      name: "",
+      description: {
+        uz: "",
+        ru: "",
+        en: "",
+      },
+      location: null,
+      logo: null,
+      gallery: [],
+    };
+    setCreatedList([emptyClient]);
+    setActiveItem(emptyClient);
+    setIdCounter((prevCounter) => prevCounter + 1);
+  };
 
   const handleChangeActiveId = (id) => {
     const updatedItem = createdList.find((item) => item.id === id);
@@ -24,15 +56,26 @@ export default function NewsMain({ closeModal }) {
     setActiveItem(updatedItem);
   };
 
-  const handleAddNews = () => {
-    const newItem = { ...emptyItem, id: idCounter };
-    setIdCounter((prevCounter) => prevCounter + 1);
+  const handleAddClient = () => {
+    const newItem = {
+      id: idCounter,
+      name: "",
+      description: {
+        uz: "",
+        ru: "",
+        en: "",
+      },
+      location: null,
+      logo: null,
+      gallery: [],
+    };
     setCreatedList((prevList) => [...prevList, newItem]);
     setActiveItem(newItem);
     setActiveId(newItem.id);
+    setIdCounter((prevCounter) => prevCounter + 1);
   };
 
-  const handleDeleteProduct = (id) => {
+  const handleDeleteClient = (id) => {
     const updatedList = createdList.filter((item) => item.id !== id);
     setCreatedList(updatedList);
     if (updatedList.length > 0) {
@@ -45,15 +88,46 @@ export default function NewsMain({ closeModal }) {
     }
   };
 
-  const handleSaveAllItems = async () => {
+  const handleSaveAllClients = async () => {
+    if (!createdList.length) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  };
+    try {
+      for (let client of createdList) {
+        const formData = new FormData();
+        formData.append(
+          "json",
+          JSON.stringify({
+            name: client.name,
+            description: client.description,
+            location: { id: client.location?.id || null },
+          })
+        );
 
-  const languages = ["uz", "ru", "en"];
-  const [activeLang, setActiveLang] = useState(languages[0]);
+        if (client.logo) {
+          formData.append("logo", client.logo);
+        }
+
+        client.gallery.forEach((file) => {
+          formData.append("gallery", file);
+        });
+
+        await axios.post(
+          "http://213.230.91.55:8130/v1/client",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+      console.log("All clients saved successfully");
+    } catch (error) {
+      console.error("Error saving clients:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="fixed h-screen flex w-full bg-modalBg z-[999] inset-0">
@@ -72,24 +146,30 @@ export default function NewsMain({ closeModal }) {
       <div className="h-full w-full relative max-w-[300px]">
         <CreatedList
           activeId={activeId}
-          activeLang={activeLang}
           createdList={createdList}
           closeModal={closeModal}
-          addNewItem={handleAddNews}
+          addNewItem={handleAddClient}
           setActiveId={handleChangeActiveId}
-          deleteItem={handleDeleteProduct}
-          handleSave={handleSaveAllItems}
+          deleteItem={handleDeleteClient}
+          handleSave={handleSaveAllClients}
         />
       </div>
       <div className="w-full h-full bg-white p-8 overflow-y-scroll no-scrollbar">
-        <ClientsInfo
-          setCreatedList={setCreatedList}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          languages={languages}
-          activeLang={activeLang}
-          setActiveLang={setActiveLang}
-        />
+        {activeItem ? (
+          <ClientsInfo
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            languages={languages}
+            activeLang={activeLang}
+            setActiveLang={setActiveLang}
+            locations={locations}
+            fetchLocations={fetchLocations}
+          />
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            <p>Выберите или добавьте клиента для редактирования.</p>
+          </div>
+        )}
       </div>
     </div>
   );

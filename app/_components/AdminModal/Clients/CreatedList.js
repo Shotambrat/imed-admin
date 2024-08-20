@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import Image from "next/image";
 import defaultImage from "@/public/admin/default-image.svg";
 import close from "@/public/svg/close.svg";
@@ -7,7 +7,6 @@ import backIcon from "@/public/admin/arrow-red-left.svg";
 
 export default function CreatedList({
   createdList,
-  activeLang,
   closeModal,
   activeId,
   setActiveId,
@@ -29,7 +28,7 @@ export default function CreatedList({
             alt="Back Icon"
             className="h-4 w-4"
           />
-          <p>Back</p>
+          <p>Назад</p>
         </button>
         <div className="flex flex-col gap-2 overflow-y-scroll no-scrollbar w-full">
           {createdList.map((item) => (
@@ -60,17 +59,16 @@ export default function CreatedList({
               <div className="bg-white w-32 h-full flex items-center justify-center">
                 <Image
                   src={
-                    item.image && item.image.length > 0
-                      ? item.image[0] instanceof Blob ||
-                        item.image[0] instanceof File
-                        ? URL.createObjectURL(item.image[0])
-                        : item.image[0] // Используем как URL если это не Blob/File
+                    item.logo && item.logo.length > 0
+                      ? item.logo instanceof Blob || item.logo instanceof File
+                        ? URL.createObjectURL(item.logo)
+                        : item.logo // Используем как URL если это не Blob/File
                       : defaultImage
                   }
                   width={100}
                   height={100}
                   alt={`Created List Preview Image ${item.id}`}
-                  className="h-full w-full"
+                  className="h-full w-full object-contain"
                 />
               </div>
               <div className="h-full w-full overflow-x-hidden flex flex-col justify-center items-start">

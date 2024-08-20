@@ -1,88 +1,35 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React from 'react';
 import Image from 'next/image';
-import partnerPhoto1 from "@/public/images/clients/gallery1.png";
-import partnerPhoto2 from "@/public/images/clients/gallery2.png";
-import partnerPhoto3 from "@/public/images/clients/gallery3.png";
 
-const gallery = [
-    {
-        id: 1,
-        imageSrc: partnerPhoto1,
-        alt: "VITAMED MEDICAL",
-    },
-    {
-        id: 2,
-        imageSrc: partnerPhoto2,
-        alt: "ANOTHER MEDICAL",
-    },
-    {
-        id: 3,
-        imageSrc: partnerPhoto3,
-        alt: "ANOTHER MEDICAL",
-    },
-    {
-        id: 4,
-        imageSrc: partnerPhoto1,
-        alt: "VITAMED MEDICAL",
-    },
-    {
-        id: 5,
-        imageSrc: partnerPhoto2,
-        alt: "ANOTHER MEDICAL",
-    },
-    {
-        id: 6,
-        imageSrc: partnerPhoto1,
-        alt: "VITAMED MEDICAL",
-    },
-    {
-        id: 7,
-        imageSrc: partnerPhoto2,
-        alt: "ANOTHER MEDICAL",
-    },
-    {
-        id: 8,
-        imageSrc: partnerPhoto3,
-        alt: "ANOTHER MEDICAL",
-    },
-    {
-        id: 9,
-        imageSrc: partnerPhoto1,
-        alt: "VITAMED MEDICAL",
-    },
-    {
-        id: 10,
-        imageSrc: partnerPhoto2,
-        alt: "ANOTHER MEDICAL",
-    },
-];
+export default function Gallery({
+  activeItem,
+  handleFieldChange,
+}) {
+  const handleAddImage = (e) => {
+    const files = Array.from(e.target.files);
+    const newGallery = [...activeItem.gallery, ...files];
+    handleFieldChange('gallery', newGallery);
+  };
 
-const Gallery = () => {
-    const [visibleCount, setVisibleCount] = useState(6); // Initially show 6 photos
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium mb-2">Галерея</label>
+      <input type="file" multiple onChange={handleAddImage} className="mb-4" />
 
-    const showMorePartners = () => {
-        setVisibleCount(gallery.length); // Show all photos on button click
-    };
-
-    return (
-        <div className="w-full max-w-[1440px] mx-auto px-4 py-6 bg-white mb-[120px] mdl:mb-[150px]">
-            <h2 className="text-[20px] mdx:text-[30px] mdl:text-[35px] xl:text-[40px] font-semibold mb-6 mt-[120px]">ГАЛЕРЕЯ</h2>
-            <div className="grid grid-cols-1 gap-6 mdl:grid-cols-2 mdl:gap-3 xl:grid-cols-3">
-                {gallery.slice(0, visibleCount).map((item) => (
-                    <div key={item.id} className="w-full h-auto">
-                        <Image
-                            src={item.imageSrc}
-                            alt={item.alt}
-                            layout="responsive"
-                            objectFit="cover"
-                            className='w-full h-full max-h-[200px] mdl:max-h-[275px]'
-                        />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default Gallery;
+      <div className="grid grid-cols-3 gap-2">
+        {activeItem.gallery.map((image, index) => (
+          <div key={index} className="relative">
+            <Image
+              src={image instanceof Blob || image instanceof File ? URL.createObjectURL(image) : image}
+              alt="Client Image"
+              width={100}
+              height={100}
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
