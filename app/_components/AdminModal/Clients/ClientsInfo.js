@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import LocationDropdown from "./LocationDropdown";
 import LogoUploader from "./LogoUploader";
 import GalleryUploader from "./GalleryUploader";
@@ -7,6 +7,7 @@ import GalleryUploader from "./GalleryUploader";
 const ClientsInfo = ({
   activeItem,
   setActiveItem,
+  updateCreatedList,
   languages,
   activeLang,
   setActiveLang,
@@ -14,41 +15,49 @@ const ClientsInfo = ({
   fetchLocations,
 }) => {
   const handleInputChange = (field, value) => {
-    setActiveItem({
-      ...activeItem,
-      [field]: value,
-    });
+    const updatedItem = { ...activeItem, [field]: value };
+    setActiveItem(updatedItem);
+    updateCreatedList(updatedItem);
   };
 
   const handleDescriptionChange = (lang, value) => {
-    setActiveItem({
+    const updatedDescription = {
+      ...activeItem.description,
+      [lang]: value,
+    };
+    const updatedItem = {
       ...activeItem,
-      description: {
-        ...activeItem.description,
-        [lang]: value,
-      },
-    });
+      description: updatedDescription,
+    };
+    setActiveItem(updatedItem);
+    updateCreatedList(updatedItem);
   };
 
   const setSelectedLocation = (location) => {
-    setActiveItem({
+    const updatedItem = {
       ...activeItem,
-      location: location,
-    });
+      location,
+    };
+    setActiveItem(updatedItem);
+    updateCreatedList(updatedItem);
   };
 
   const setLogo = (logoFile) => {
-    setActiveItem({
+    const updatedItem = {
       ...activeItem,
       logo: logoFile,
-    });
+    };
+    setActiveItem(updatedItem);
+    updateCreatedList(updatedItem);
   };
 
   const setGallery = (galleryFiles) => {
-    setActiveItem({
+    const updatedItem = {
       ...activeItem,
       gallery: galleryFiles,
-    });
+    };
+    setActiveItem(updatedItem);
+    updateCreatedList(updatedItem);
   };
 
   return (

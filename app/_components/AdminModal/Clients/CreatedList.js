@@ -59,7 +59,7 @@ export default function CreatedList({
               <div className="bg-white w-32 h-full flex items-center justify-center">
                 <Image
                   src={
-                    item.logo && item.logo.length > 0
+                    item.logo !== null
                       ? item.logo instanceof Blob || item.logo instanceof File
                         ? URL.createObjectURL(item.logo)
                         : item.logo // Используем как URL если это не Blob/File

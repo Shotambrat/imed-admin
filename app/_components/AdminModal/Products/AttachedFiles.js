@@ -45,7 +45,7 @@ const Modal = ({
       onClick={closeModal}
     >
       <div
-        className="bg-white max-w-[600px] w-full relative mx-4 my-4 flex flex-col overflow-y-auto max-h-full no-scrollbar xl:h-auto"
+        className="bg-white max-w-[600px] w-full relative mx-4 my-4 flex flex-col overflow-y-auto max-h-full no-scrollbar xl:h-auto "
         onClick={(e) => e.stopPropagation()}
       >
         <button

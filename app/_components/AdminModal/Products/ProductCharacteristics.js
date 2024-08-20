@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import mindray from "@/public/images/aboutUs/partners/image58.png";
 import arrowred from "@/public/svg/arrow-right-red.svg";
 import Modal from "./AttachedFiles";
+import axios from "axios";
 
 export default function ProductCharacteristics({
   setCreatedList,
@@ -15,52 +15,31 @@ export default function ProductCharacteristics({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState([]);
   const [editType, setEditType] = useState(null);
-
-  const files = [
-    {
-      id: 7,
-      name: "7-Zoncare%2",
-      size: "6.30 Mb",
-      downloadLink:
-        "http://213.230.91.55:8130/v1/product/file/7-Zoncare%20Catalog%20--2024.pdf",
-    },
-    {
-      id: 8,
-      name: "8-Quotation%2",
-      size: "0.27 Mb",
-      downloadLink:
-        "http://213.230.91.55:8130/v1/product/file/8-Quotation%20for%20Browiner%20X-ray.pdf",
-    },
-    {
-      id: 9,
-      name: "9-Perla%20Denta",
-      size: "0.18 Mb",
-      downloadLink:
-        "http://213.230.91.55:8130/v1/product/file/9-Perla%20Dental%20Unit%20Product%20List.pdf",
-    },
-  ];
-
+  const [clients, setClients] = useState([]);
+  const [selectedClients, setSelectedClients] = useState([]);
   const [modal, setModal] = useState(false);
 
-  const openModal = () => {
-    setModal(true);
-  };
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get("https://imed.uz/api/v1/client/all");
+        setClients(response.data.data);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      }
+    };
+    fetchClients();
+  }, []);
 
-  const closeModal = () => {
-    setModal(false);
-  };
+  const openModal = () => setModal(true);
+  const closeModal = () => setModal(false);
 
   const data = [
     {
       category: "description",
       title: "Описание",
       desc: true,
-      data: activeItem.descriptions
-        .map(
-          (block) =>
-            `${block.title[activeLang] || ""}: ${block.value[activeLang] || ""}`
-        )
-        .join("\n"),
+      data: activeItem.descriptions,
     },
     {
       category: "characteristics",
@@ -80,19 +59,15 @@ export default function ProductCharacteristics({
   const [filtered, setFiltered] = useState(data[0]);
 
   const handleOpenModal = (content = [], type) => {
-    const initializedContent = Array.isArray(content)
-      ? content.map((block) => ({
-          title: { uz: "", ru: "", en: "", ...block.title },
-          value: { uz: "", ru: "", en: "", ...block.value },
-        }))
-      : [
-          {
-            title: { uz: "", ru: "", en: "" },
-            value: { uz: "", ru: "", en: "" },
-          },
-        ];
-
-    setModalContent(initializedContent);
+    if (type === "clients") {
+      setSelectedClients(activeItem.clients.map((client) => client.id));
+    } else {
+      const initializedContent = content.map((block) => ({
+        title: { uz: "", ru: "", en: "", ...block.title },
+        value: { uz: "", ru: "", en: "", ...block.value },
+      }));
+      setModalContent(initializedContent);
+    }
     setEditType(type);
     setIsModalOpen(true);
   };
@@ -129,35 +104,33 @@ export default function ProductCharacteristics({
     } else if (editType === "characteristics") {
       updatedItem.characteristics = modalContent;
     } else if (editType === "clients") {
-      updatedItem.clients = modalContent;
+      updatedItem.clients = clients.filter((client) =>
+        selectedClients.includes(client.id)
+      );
     }
 
-    // Update the active item state immediately
     setActiveItem(updatedItem);
-
-    // Ensure this update only applies to the current product
     setCreatedList((prevList) =>
       prevList.map((item) => (item.id === activeItem.id ? updatedItem : item))
     );
-
     handleCloseModal();
   };
 
+  const handleCheckboxChange = (clientId) => {
+    setSelectedClients((prevSelected) =>
+      prevSelected.includes(clientId)
+        ? prevSelected.filter((id) => id !== clientId)
+        : [...prevSelected, clientId]
+    );
+  };
+
   useEffect(() => {
-    // Update the filtered data when modal content is saved
     const updatedData = [
       {
         category: "description",
         title: "Описание",
         desc: true,
-        data: activeItem.descriptions
-          .map(
-            (block) =>
-              `${block.title[activeLang] || ""}: ${
-                block.value[activeLang] || ""
-              }`
-          )
-          .join("\n"),
+        data: activeItem.descriptions,
       },
       {
         category: "characteristics",
@@ -201,9 +174,14 @@ export default function ProductCharacteristics({
       </div>
       <div>
         {filtered.desc ? (
-          <p className="text-lg leading-5 whitespace-pre-line">
-            {filtered.data}
-          </p>
+          <div className="flex flex-col gap-4">
+            {filtered.data.map((block, index) => (
+              <div key={index} className="flex flex-col gap-2">
+                <h3 className="font-bold text-lg">{block.title[activeLang]}</h3>
+                <p className="text-neutral-500">{block.value[activeLang]}</p>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col gap-6 w-full">
             {filtered.category === "characteristics" &&
@@ -223,30 +201,19 @@ export default function ProductCharacteristics({
             {filtered.category === "client" && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {filtered.data.map((client, index) => (
-                  <div key={index} className="border p-4">
-                    <div className="flex flex-col items-center mdx:flex-row">
+                  <div key={index} className="border p-4 ">
+                    <div className="flex-col items-center mdx:flex-row flex gap-6">
                       <Image
-                        src={client.logo}
+                        src={client.logo?.url}
                         alt={client.name}
-                        className="w-full max-w-[320px] h-auto mb-2 p-5 object-contain lg:max-w-[340px]"
+                        width={50}
+                        height={50}
+                        className="ml-4"
                       />
-                      <div className="mt-2">
+                      <div className="mt-2 flex gap-4 flex-col">
                         <h3 className="font-bold text-lg mdx:text-2xl mdx:mb-2">
                           {client.name}
                         </h3>
-                        <p className="text-[#808080] mdx:mb-4">
-                          {client.description}
-                        </p>
-                        <button className="text-[#E31E24] mt-2 flex items-center">
-                          Подробнее{" "}
-                          <Image
-                            src={arrowred}
-                            width={100}
-                            height={100}
-                            alt="Arrow Icon"
-                            className="w-5 h-5"
-                          />
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -276,7 +243,7 @@ export default function ProductCharacteristics({
         </button>
         <button
           className="bg-[#FCE8E9] text-[#E31E24] py-4 px-[30px] font-bold hover:text-[#EE787C]"
-          onClick={() => handleOpenModal(activeItem.clients, "clients")}
+          onClick={() => handleOpenModal(null, "clients")}
         >
           Редактировать Клиенты
         </button>
@@ -284,7 +251,7 @@ export default function ProductCharacteristics({
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg w-full max-w-lg h-auto">
+          <div className="bg-white p-8 rounded-lg w-full max-w-lg h-[90%] overflow-y-scroll">
             <div className="flex justify-end mb-4">
               {languages.map((lang) => (
                 <button
@@ -307,7 +274,27 @@ export default function ProductCharacteristics({
                 ? "Характеристики товара"
                 : "Клиент"}
             </h2>
-            {Array.isArray(modalContent) &&
+            {editType === "clients" ? (
+              <div>
+                {clients.map((client) => (
+                  <div key={client.id} className="flex items-center mb-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedClients.includes(client.id)}
+                      onChange={() => handleCheckboxChange(client.id)}
+                    />
+                    <Image
+                      src={client.logo?.url}
+                      alt={client.name}
+                      width={50}
+                      height={50}
+                      className="ml-4"
+                    />
+                    <span className="ml-4">{client.name}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
               modalContent.map((block, index) => (
                 <div key={index} className="mb-6 border-b pb-4">
                   <div className="mb-4">
@@ -340,13 +327,8 @@ export default function ProductCharacteristics({
                     Удалить блок
                   </button>
                 </div>
-              ))}
-            <button
-              onClick={handleAddBlock}
-              className="py-2 px-4 bg-blue-500 text-white rounded mb-4"
-            >
-              Добавить блок
-            </button>
+              ))
+            )}
             <div className="flex justify-end gap-4">
               <button
                 onClick={handleSave}

@@ -10,7 +10,7 @@ import axios from "axios";
 const LocationDropdown = ({ locations, setLocations, selectedLocation, setSelectedLocation }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState("add"); // 'add' или 'edit'
   const [editingLocation, setEditingLocation] = useState(null);
 
   const toggleDropdown = () => {
@@ -31,7 +31,23 @@ const LocationDropdown = ({ locations, setLocations, selectedLocation, setSelect
 
   const deleteLocation = async (locationId) => {
     try {
-      await axios.delete(`http://213.230.91.55:8130/v1/location/${locationId}`);
+      const authFormData = new FormData();
+      authFormData.append("username", "nasiniemsin");
+      authFormData.append("password", "2x2=xx");
+
+      const authResponse = await axios.post(
+        "http://213.230.91.55:8130/v1/auth/login",
+        authFormData
+      );
+
+      const token = authResponse.data.data.token;
+
+      await axios.delete(`http://213.230.91.55:8130/v1/location/${locationId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const updatedLocations = locations.filter((loc) => loc.id !== locationId);
       setLocations(updatedLocations);
       if (selectedLocation && selectedLocation.id === locationId) {

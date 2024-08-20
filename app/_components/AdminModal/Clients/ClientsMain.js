@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function ClientsMain({ closeModal }) {
   const [idCounter, setIdCounter] = useState(2);
-  const [activeId, setActiveId] = useState(1);
+  const [activeId, setActiveId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState([]);
   const [createdList, setCreatedList] = useState([]);
@@ -20,10 +20,25 @@ export default function ClientsMain({ closeModal }) {
     initializeEmptyClient();
   }, []);
 
+  useEffect(() => {
+    if (createdList.length > 0 && !activeId) {
+      const firstItem = createdList[0];
+      setActiveItem(firstItem);
+      setActiveId(firstItem.id);
+    }
+  }, [createdList]);
+
   const fetchLocations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://213.230.91.55:8130/v1/location");
+      const response = await axios.get(
+        "http://213.230.91.55:8130/v1/location",
+        {
+          headers: {
+            "Accept-Language": activeLang,
+          },
+        }
+      );
       setLocations(response.data.data);
     } catch (error) {
       console.error("Error fetching locations:", error);
@@ -88,7 +103,24 @@ export default function ClientsMain({ closeModal }) {
     }
   };
 
+  const updateCreatedList = (updatedItem) => {
+    const updatedList = createdList.map((item) =>
+      item.id === updatedItem.id ? updatedItem : item
+    );
+    setCreatedList(updatedList);
+  };
+
   const handleSaveAllClients = async () => {
+    const authFormData = new FormData();
+    authFormData.append("username", "nasiniemsin");
+    authFormData.append("password", "2x2=xx");
+    const authResponse = await axios.post(
+      "http://213.230.91.55:8130/v1/auth/login",
+      authFormData
+    );
+
+    const token = authResponse.data.data.token;
+
     if (!createdList.length) return;
     setLoading(true);
     try {
@@ -111,21 +143,19 @@ export default function ClientsMain({ closeModal }) {
           formData.append("gallery", file);
         });
 
-        await axios.post(
-          "http://213.230.91.55:8130/v1/client",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        await axios.post("http://213.230.91.55:8130/v1/client", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
       }
       console.log("All clients saved successfully");
     } catch (error) {
-      console.error("Error saving clients:", error);
+      alert("Что-то заполнено не до конца, проверьте список добавленных клиентов");
     } finally {
       setLoading(false);
+      closeModal(false)
     }
   };
 
@@ -159,6 +189,7 @@ export default function ClientsMain({ closeModal }) {
           <ClientsInfo
             activeItem={activeItem}
             setActiveItem={setActiveItem}
+            updateCreatedList={updateCreatedList}
             languages={languages}
             activeLang={activeLang}
             setActiveLang={setActiveLang}
